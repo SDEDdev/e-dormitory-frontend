@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 // Router
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 // 
 import MainPageHeader from '../../ui/Headers/MainPageHeader';
 // MUI
@@ -8,7 +8,7 @@ import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, TextField, Ty
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axios from 'axios';
 // 
-import Turnstile from "react-turnstile";
+//import Turnstile from "react-turnstile";
 
 
 export default function RegisterPageComponent() {
@@ -19,18 +19,21 @@ export default function RegisterPageComponent() {
 
     const [isError, setIsError] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
+
+    const navigate = useNavigate();
+
     // Captcha
-    const [openCaptcha, setOpenCaptcha] = useState(false);
-    const [token, setToken] = useState("");
+    // const [openCaptcha, setOpenCaptcha] = useState(false);
+    // const [token, setToken] = useState("");
 
-    const verifyCaptcha = () => {
-        setOpenCaptcha(true)
-    }
+    // const verifyCaptcha = () => {
+    //     setOpenCaptcha(true)
+    // }
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async () => {
         //event.preventDefault();
-        setToken(event)
-        console.log(event);
+        // setToken(event)
+        // console.log(event);
         //const data = new FormData(event.currentTarget);
 
 
@@ -41,33 +44,35 @@ export default function RegisterPageComponent() {
                         phone:phone,
                         email: email,
                         password: password,
-                        token: token,
+                        //token: token,
                     });
-                    await axios.post("http://10.160.12.50:3000/user/register", {
+                    await axios.post("https://e-dormitory.sded.cf/v0/user/register", {
                         phone:phone,
                         email: email,
                         password: password,
-                        token: token,
+                        //token: token,
                     });
                     setIsError(false);
                     setErrorMessage("");
-                    setToken("");
-                    setOpenCaptcha(false);
+                    navigate("/account/login");
+                    
+                    // setToken("");
+                    // setOpenCaptcha(false);
                 } catch (error) {
-                    setToken("");
+                    // setToken("");
                     setIsError(true);
                     setErrorMessage(error.response.data.errors[0].msg || "Сталася помилка");
-                    setOpenCaptcha(false);
+                    // setOpenCaptcha(false);
                 }
             }
             else {
-                setOpenCaptcha(false);
+                // setOpenCaptcha(false);
                 setIsError(true);
                 setErrorMessage("Паролі не співпадають");
             }
         }
         else {
-            setOpenCaptcha(false);
+            // setOpenCaptcha(false);
             setIsError(true);
             setErrorMessage("Не всі поля заповнені");
         }
@@ -92,7 +97,7 @@ export default function RegisterPageComponent() {
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Вхід
+                        Реєстрація
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
@@ -152,7 +157,7 @@ export default function RegisterPageComponent() {
                             </Grid>
                             {/* Captcha confirm */}
 
-                            {openCaptcha &&
+                            {/* {openCaptcha &&
                                 <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
                                     <Turnstile
                                         sitekey="0x4AAAAAAADq3Kne7N9r1x9f"
@@ -160,7 +165,7 @@ export default function RegisterPageComponent() {
                                         onError={error=>setOpenCaptcha(false)}
                                     />
 
-                                </Grid>}
+                                </Grid>} */}
 
 
                             {isError && <Grid item xs={12}><Alert severity="error">{errorMessage}</Alert> </Grid>}
@@ -168,7 +173,7 @@ export default function RegisterPageComponent() {
                         </Grid>
                         <Button
                             //type="submit"
-                            onClick={verifyCaptcha}
+                            onClick={()=>handleSubmit()}
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}

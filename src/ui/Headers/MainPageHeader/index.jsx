@@ -5,13 +5,14 @@ import { Link } from 'react-router-dom';
 import { AppBar, Box, Button, Container, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemButton, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
-import ReCAPTCHA from "react-google-recaptcha";
+import nookies, { parseCookies } from 'nookies'
 
 
 const drawerWidth = 240;
 export default function MainPageHeader(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const { token } = parseCookies()
 
 
   const handleDrawerToggle = () => {
@@ -25,20 +26,35 @@ export default function MainPageHeader(props) {
       </Typography>
       <Divider />
       <List>
-        {/* ------Login------- */}
-        <ListItem disablePadding>
-          <ListItemButton sx={{ textAlign: 'center' }}>
-            <Link to={"/account/login"}>Увійти</Link>
-          </ListItemButton>
-        </ListItem>
-        {/* ------------- */}
-        {/* ------Register------- */}
-        <ListItem disablePadding>
-          <ListItemButton sx={{ textAlign: 'center' }}>
-            <Link to={"/account/sign-up"}>Реєстрація</Link>
-          </ListItemButton>
-        </ListItem>
-        {/* ------------- */}
+        {!token
+          &&
+          <>
+            {/* ------Login------- */}
+            <ListItem disablePadding>
+              <ListItemButton sx={{ textAlign: 'center' }}>
+                <Link to={"/account/login"}>Увійти</Link>
+              </ListItemButton>
+            </ListItem>
+            {/* ------------- */}
+            {/* ------Register------- */}
+            <ListItem disablePadding>
+              <ListItemButton sx={{ textAlign: 'center' }}>
+                <Link to={"/account/sign-up"}>Реєстрація</Link>
+              </ListItemButton>
+            </ListItem>
+            {/* ------------- */}
+          </>
+        }
+        {
+          token
+          &&
+          <ListItem disablePadding>
+            <ListItemButton sx={{ textAlign: 'center' }}>
+              <Link to={"/profile"}>Профіль</Link>
+            </ListItemButton>
+          </ListItem>
+        }
+
       </List>
     </Box>
   );
@@ -68,16 +84,31 @@ export default function MainPageHeader(props) {
               <Link to={"/"}>Є-поселення</Link>
             </Typography>
             <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-              {/* ---Login---- */}
-              <Button sx={{ color: '#fff' }}>
-                <Link to={"/account/login"}>Увійти</Link>
-              </Button>
-              {/* ------- */}
-              {/* ---Register---- */}
-              <Button sx={{ color: '#fff' }}>
-                <Link to={"/account/sign-up"}>Реєстрація</Link>
-              </Button>
-              {/* ------- */}
+              {!token
+                &&
+                <>
+                  {/* ---Login---- */}
+                  <Button sx={{ color: '#fff' }}>
+                    <Link to={"/account/login"}>Увійти</Link>
+                  </Button>
+                  {/* ------- */}
+                  {/* ---Register---- */}
+                  <Button sx={{ color: '#fff' }}>
+                    <Link to={"/account/sign-up"}>Реєстрація</Link>
+                  </Button>
+                  {/* ------- */}
+                </>
+              }
+              {token
+                &&
+                <>
+                  {/* ---Profile---- */}
+                  <Button sx={{ color: '#fff' }}>
+                    <Link to={"/profile"}>Профіль</Link>
+                  </Button>
+                  {/* ------- */}
+                </>
+              }
             </Box>
           </Toolbar>
         </Container>
