@@ -24,7 +24,7 @@ export default function LoginPageComponent() {
   const handleSubmit = async () => {
     if (login && password) {
       try {
-        const {data} = await axios.post("https://e-dormitory.sded.cf/v0/user/login", {
+        const {data} = await axios.post("/v0/user/login", {
           login: login,
           password: password,
         });

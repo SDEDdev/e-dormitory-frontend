@@ -46,7 +46,7 @@ export default function RegisterPageComponent() {
                         password: password,
                         //token: token,
                     });
-                    await axios.post("https://e-dormitory.sded.cf/v0/user/register", {
+                    await axios.post("/v0/user/register", {
                         phone:phone,
                         email: email,
                         password: password,

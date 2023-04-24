@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
 import MainPageHeader from '../../ui/Headers/MainPageHeader'
 import { Box, Button, Container, Grid, Modal, TextField, Typography } from '@mui/material'
 
@@ -6,7 +6,10 @@ import { parseCookies } from 'nookies'
 import axios from 'axios';
 
 export default function ProfilePageComponent() {
-    const [open, setOpen] = React.useState(false);
+    const [userOrdersData, setuserOrdersData] = useState([]);
+
+
+    const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
@@ -22,15 +25,41 @@ export default function ProfilePageComponent() {
             console.log(key);
         }
 
-        const res = axios.post("https://e-dormitory.sded.cf/v0/order/create",data ,
-            {
-                headers: {
-                    'Authorization': `${token}`,
-                    'content-type': 'multipart/form-data'
-                }
-            });
+        try {
+            const res = axios.post("/v0/order/create", data,
+                {
+                    headers: {
+                        'Authorization': `${token}`,
+                        'content-type': 'multipart/form-data'
+                    }
+                });
+        } catch (error) {
+            console.log(error);
+        }
 
         //console.log(res); 
+    }
+
+    useEffect(() => {
+        GetUserOrder();
+    }, [])
+
+    const GetUserOrder = async () => {
+        try {
+            const { data } = await axios.post("/v0/order/list", {
+                "limit": 10,
+                "page": 0
+            },
+                {
+                    headers: {
+                        'Authorization': `${token}`,
+                    }
+                });
+            console.log(data);
+            setuserOrdersData(data);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -38,11 +67,31 @@ export default function ProfilePageComponent() {
             <MainPageHeader />
             <Container >
                 <Typography sx={{ fontSize: "32px" }}>Ваш профіль</Typography>
-                <Button onClick={handleOpen} variant="contained" >Створити заявку</Button>
+                <Button sx={{ marginBottom: "35px" }} onClick={handleOpen} variant="contained" >Створити заявку</Button>
                 {/* Order list */}
-                <Box>
+                <Grid container spacing={2} rowSpacing={2}>
+                    {userOrdersData?.map((item, index) => (
+                        <Grid item xs={12} key={index} >
+                            <Box sx={{ border: "2px solid #1976d2", borderRadius: "15px", padding: "15px" }}>
+                                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                    <Typography>Заявка №{item.id}</Typography>
+                                    <Typography>Статус: <span> </span>
+                                        {item.status === 1 && "У розгляді"}
+                                        {item.status === 2 && "Підтверджено"}
+                                        {item.status === 3 && "Відхилено"}
+                                        {item.status === 5 && "Відкликано"}
+                                    </Typography>
+                                </Box>
+                                <Box>
 
-                </Box>
+                                    {item?.files?.map((photo, index) => (
+                                        <Box component={"img"} src={`http://localhost:3000/v0/static?order=${item.id}&file=${photo}&token=${token}`} alt="photo" sx={{ width: "100px", marginRight:"5px" }} />
+                                    ))}
+                                </Box>
+                            </Box>
+                        </Grid>
+                    ))}
+                </Grid>
             </Container>
             <Modal
                 open={open}
@@ -55,19 +104,21 @@ export default function ProfilePageComponent() {
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    width: "50vw",
+                    width: "80vw",
+                    height: "80vh",
                     bgcolor: 'background.paper',
                     border: '2px solid #000',
                     boxShadow: 24,
                     p: 4,
+                    overflow: "auto"
                 }}>
                     {/* Form */}
                     <Box component="form" onSubmit={NewOrder}>
-                        <Grid container spacing={2}>
+                        <Grid container spacing={2} sx={{ marginBottom: "30px" }}>
                             {/* Прізвище */}
                             <Grid
                                 item
-                                sx={4}
+                                xs={4}
                             >
                                 <TextField
                                     item
@@ -84,23 +135,7 @@ export default function ProfilePageComponent() {
                             {/* Ім'я */}
                             <Grid
                                 item
-                                sx={4}
-                            >
-                                <TextField
-                                    item
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    label="По-батькові"
-                                    name="sur_name"
-                                    autoComplete="surName"
-                                    autoFocus
-                                />
-                            </Grid>
-                            {/* По-батькові */}
-                            <Grid
-                                item
-                                sx={4}
+                                xs={4}
                             >
                                 <TextField
                                     item
@@ -113,10 +148,26 @@ export default function ProfilePageComponent() {
                                     autoFocus
                                 />
                             </Grid>
+                            {/* По-батькові */} <Grid
+                                item
+                                xs={4}
+                            >
+                                <TextField
+                                    item
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    label="По-батькові"
+                                    name="sur_name"
+                                    autoComplete="surName"
+                                    autoFocus
+                                />
+                            </Grid>
+
                             {/* Факультет */}
                             <Grid
                                 item
-                                sx={4}
+                                xs={4}
                             >
                                 <TextField
                                     item
@@ -131,7 +182,7 @@ export default function ProfilePageComponent() {
                             {/* Курс */}
                             <Grid
                                 item
-                                sx={4}
+                                xs={4}
                             >
                                 <TextField
                                     item
@@ -146,7 +197,7 @@ export default function ProfilePageComponent() {
                             {/* Група */}
                             <Grid
                                 item
-                                sx={4}
+                                xs={4}
                             >
                                 <TextField
                                     item
@@ -161,7 +212,7 @@ export default function ProfilePageComponent() {
                             {/* Гуртожиток */}
                             <Grid
                                 item
-                                sx={4}
+                                xs={4}
                             >
                                 <TextField
                                     item
@@ -176,7 +227,7 @@ export default function ProfilePageComponent() {
                             {/* Паспорт номер */}
                             <Grid
                                 item
-                                sx={4}
+                                xs={4}
                             >
                                 <TextField
                                     item
@@ -191,7 +242,7 @@ export default function ProfilePageComponent() {
                             {/* Рпнппк */}
                             <Grid
                                 item
-                                sx={4}
+                                xs={4}
                             >
                                 <TextField
                                     item
@@ -206,44 +257,115 @@ export default function ProfilePageComponent() {
                             {/* фото паспорта 1 */}
                             <Grid
                                 item
-                                sx={4}
+                                xs={4}
                             >
-                                <input type="file" name="passport" id="" />
+                                <label htmlFor="passport">
+                                    <input
+                                        style={{ display: "none" }}
+                                        id="passport"
+                                        name="passport"
+                                        type="file"
+                                    />
+
+                                    <Button
+                                        component="span"
+                                        variant="contained"
+                                    >
+                                        Завантажити фото паспорту (1 сторінка)
+                                    </Button>
+                                </label>
+
                             </Grid>
                             {/* фото паспорта 2 */}
                             <Grid
                                 item
-                                sx={4}
+                                xs={4}
                             >
-                                <input type="file" name="passport" id="" />
+                                <label htmlFor="passport2">
+                                    <input
+                                        style={{ display: "none" }}
+                                        id="passport2"
+                                        name="passport"
+                                        type="file"
+                                    />
+
+                                    <Button
+                                        component="span"
+                                        variant="contained"
+                                    >
+                                        Завантажити фото паспорту (2 сторінка)
+                                    </Button>
+                                </label>
                             </Grid>
                             {/* ідентифікаційний код */}
                             <Grid
                                 item
-                                sx={4}
+                                xs={4}
                             >
-                                <input type="file" name="identification_code" id="" />
+                                <label htmlFor="identification_code">
+                                    <input
+                                        style={{ display: "none" }}
+                                        id="identification_code"
+                                        name="identification_code"
+                                        type="file"
+                                    />
+
+                                    <Button
+                                        component="span"
+                                        variant="contained"
+                                    >
+                                        Завантажити ідентифікаційний код
+                                    </Button>
+                                </label>
                             </Grid>
                             {/* медична довідка */}
                             <Grid
                                 item
-                                sx={4}
+                                xs={4}
                             >
-                                <input type="file" name="medical_reference" id="" />
+                                <label htmlFor="medical_reference">
+                                    <input
+                                        style={{ display: "none" }}
+                                        id="medical_reference"
+                                        name="medical_reference"
+                                        type="file"
+                                    />
+
+                                    <Button
+                                        component="span"
+                                        variant="contained"
+                                    >
+                                        Завантажити медичну довідку
+                                    </Button>
+                                </label>
                             </Grid>
                             {/* Квитанція */}
                             <Grid
                                 item
-                                sx={4}
+                                xs={4}
                             >
-                                <input type="file" name="receipt" id="" />
+                                <label htmlFor="receipt">
+                                    <input
+                                        style={{ display: "none" }}
+                                        id="receipt"
+                                        name="receipt"
+                                        type="file"
+                                    />
+
+                                    <Button
+                                        component="span"
+                                        variant="contained"
+                                    >
+                                        Завантажити квитанцію
+                                    </Button>
+                                </label>
                             </Grid>
                         </Grid>
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
+                            xs={{ mt: 5, mb: 2 }}
                         >
                             Додати
                         </Button>
