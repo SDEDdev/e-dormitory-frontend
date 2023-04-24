@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import axios from 'axios';
 
 
 // React router
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
     element:<RegisterPage/>
   },
 ]);
+axios.defaults.withCredentials = true;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
