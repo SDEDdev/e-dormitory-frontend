@@ -199,7 +199,7 @@ export default function ProfilePageComponent() {
                                     required
                                     fullWidth
                                     label="РНОКПП"
-                                    name="passport"
+                                    name="rnocpp"
                                     autoFocus
                                 />
                             </Grid>
