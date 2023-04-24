@@ -33,6 +33,10 @@ export default function LoginPageComponent() {
           maxAge: 86400,
           path: '/',
         })
+        nookies.set(null, 'user', JSON.stringify(data.user), {
+          maxAge: 86400,
+          path: '/',
+        })
         setIsError(false);
         setErrorMessage("");
         navigate("/profile");

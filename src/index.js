@@ -13,11 +13,16 @@ import {
 import MainPage from './pages/MainPage/MainPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ProfilePage from './pages/ProfilePage';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <MainPage/>,
+  },
+  {
+    path: "/profile",
+    element: <ProfilePage/>,
   },
   {
     path:"/account/login",
