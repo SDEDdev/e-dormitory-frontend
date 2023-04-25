@@ -75,7 +75,7 @@ export default function UserContent({ token }) {
                             <Box>
 
                                 {item?.files?.map((photo, index) => (
-                                    <Box key={index} component={"img"} src={`http://localhost:3000/v0/static?order=${item.id}&file=${photo}&token=${token}`} alt="photo" sx={{ width: "100px", marginRight: "5px" }} />
+                                    <Box key={index} component={"img"} src={`${process.env.REACT_APP_API}/v0/static?order=${item.id}&file=${photo}&token=${token}`} alt="photo" sx={{ width: "100px", marginRight: "5px" }} />
                                 ))}
                             </Box>
                         </Box>

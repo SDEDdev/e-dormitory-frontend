@@ -292,7 +292,7 @@ export default function AdminContent({ token }) {
                                     xs={4}>
                                     <Box
                                         component={"img"}
-                                        src={`http://localhost:3000/v0/static?order=${currentOrderData?.id}&file=${order}&token=${token}`} alt="photo" sx={{ width: "100px", marginRight: "5px" }}
+                                        src={`${process.env.REACT_APP_API}/v0/static?order=${currentOrderData?.id}&file=${order}&token=${token}`} alt="photo" sx={{ width: "100px", marginRight: "5px" }}
                                     />
                                 </Grid>
                             ))}
