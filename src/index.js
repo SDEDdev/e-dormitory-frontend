@@ -34,8 +34,8 @@ const router = createBrowserRouter([
     element:<RegisterPage/>
   },
 ]);
- axios.defaults.baseURL = 'https://e-dormitory.sded.cf';
-//axios.defaults.baseURL = 'http://10.160.12.50:3000';
+// axios.defaults.baseURL = 'https://e-dormitory.sded.cf';
+axios.defaults.baseURL = process.env.REACT_APP_API;
 //axios.defaults.baseURL = 'http://localhost:3000';
 axios.defaults.withCredentials = true;
 

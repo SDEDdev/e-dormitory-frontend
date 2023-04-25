@@ -19,15 +19,19 @@ export default function LoginPageComponent() {
   const [isError, setIsError] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
 
+  const [isLogin, setIsLogin] = useState(false);
+
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
     if (login && password) {
       try {
+        setIsLogin(true)
         const {data} = await axios.post("/v0/user/login", {
           login: login,
           password: password,
         });
+        setIsLogin(false)
         console.log(data);
         nookies.set(null, 'token', data.token, {
           maxAge: 86400,
@@ -43,11 +47,13 @@ export default function LoginPageComponent() {
       } catch (error) {
         setIsError(true);
         setErrorMessage(error.response.data.errors[0].msg || "Сталася помилка");
+        setIsLogin(false)
       }
     }
     else {
       setIsError(true);
       setErrorMessage("Не всі поля заповнені");
+      setIsLogin(false)
     }
 
   };
@@ -109,6 +115,7 @@ export default function LoginPageComponent() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={isLogin}
 
             >
               Увійти
