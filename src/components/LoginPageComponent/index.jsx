@@ -122,7 +122,7 @@ export default function LoginPageComponent() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link to={"/account/login"}>
+                <Link to={"/account/register"}>
                   Ще не маєте акаунту? Зареєструйтеся.
                 </Link>
               </Grid>

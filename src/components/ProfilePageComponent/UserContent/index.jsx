@@ -27,6 +27,7 @@ export default function UserContent({ token }) {
                         'content-type': 'multipart/form-data'
                     }
                 });
+                setOpen(false);
         } catch (error) {
             console.log(error);
         }
@@ -50,6 +51,15 @@ export default function UserContent({ token }) {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    const revokeOrder = async(id) =>{
+        const { data } = await axios.post("/v0/order/revoke", {},
+            {
+                headers: {
+                    'Authorization': `${token}`,
+                }
+            });
     }
 
     useEffect(() => {
@@ -78,6 +88,7 @@ export default function UserContent({ token }) {
                                     <Box key={index} component={"img"} src={`${process.env.REACT_APP_API}/v0/static?order=${item.id}&file=${photo}&token=${token}`} alt="photo" sx={{ width: "100px", marginRight: "5px" }} />
                                 ))}
                             </Box>
+                            {item.status === 1 && <Button onClick={()=>revokeOrder(item.id)}>Відкликати заявку</Button>}
                         </Box>
                     </Grid>
                 ))}

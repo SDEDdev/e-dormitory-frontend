@@ -297,15 +297,6 @@ export default function AdminContent({ token }) {
                                 </Grid>
                             ))}
                         </Grid>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            xs={{ mt: 5, mb: 2 }}
-                        >
-                            Додати
-                        </Button>
-
                     </Box>
                 </Box>
             </Modal>
