@@ -17,7 +17,7 @@ export default function MainPageHeader(props) {
   const {typePage} = props || "notMain";
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const  token  = Cookies.get("token");
-  const user = JSON.parse(Cookies.get("user"));
+  const user = JSON.parse(Cookies.get("user")|| null);
 
 
   const handleDrawerToggle = () => {
@@ -122,7 +122,7 @@ export default function MainPageHeader(props) {
                   {/* ------- */}
                   {/* ---Profile---- */}
                   <Button sx={{ color: typePage === "main"? "#000": '#fff '}}>
-                    <Link className='avatarLink' to={"/profile"}><AccountCircleIcon sx={{ fontSize: "35px", mr:"5px" }} />{user.email}</Link>
+                    <Link className='avatarLink' to={"/profile"}><AccountCircleIcon sx={{ fontSize: "35px", mr:"5px" }} />{user?.email}</Link>
                   </Button>
                 </Box>
               }
