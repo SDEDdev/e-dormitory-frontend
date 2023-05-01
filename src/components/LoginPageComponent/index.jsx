@@ -8,7 +8,8 @@ import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, TextField, Ty
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axios from 'axios';
 // 
-import nookies from 'nookies'
+import Cookies from 'js-cookie';
+
 //import Turnstile from "react-turnstile";
 
 
@@ -33,17 +34,17 @@ export default function LoginPageComponent() {
         });
         setIsLogin(false)
         console.log(data);
-        nookies.set(null, 'token', data.token, {
-          maxAge: 86400,
+        Cookies.set('token', data.token, {
+          expires: 86400,
           path: '/',
         })
-        nookies.set(null, 'user', JSON.stringify(data.user), {
-          maxAge: 86400,
+        Cookies.set('user', JSON.stringify(data.user), {
+          expires: 86400,
           path: '/',
         })
         setIsError(false);
         setErrorMessage("");
-        navigate("/profile");
+        navigate("/order");
       } catch (error) {
         setIsError(true);
         setErrorMessage(error.response.data.errors[0].msg || "Сталася помилка");
@@ -114,7 +115,7 @@ export default function LoginPageComponent() {
               onClick={() => handleSubmit()}
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{mt: 3, mb: 2 , color: '#fff', backgroundColor: "rgb(39,39,42)", "&:hover":{backgroundColor: "rgba(39,39,42,0.9)"} }}
               disabled={isLogin}
 
             >
@@ -122,7 +123,7 @@ export default function LoginPageComponent() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link to={"/account/register"}>
+                <Link to={"/account/sign-up"}>
                   Ще не маєте акаунту? Зареєструйтеся.
                 </Link>
               </Grid>

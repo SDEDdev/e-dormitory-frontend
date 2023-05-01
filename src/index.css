@@ -11,3 +11,7 @@ a{
   text-decoration: inherit;
   color: inherit;
 }
+.avatarLink{
+  display: flex;
+  align-items: center;
+}

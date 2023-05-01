@@ -14,12 +14,17 @@ import {
 import MainPage from './pages/MainPage/MainPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import ProfilePage from './pages/ProfilePage';
+import OrderPage from './pages/OrderPage';
+import ProfilePage from './pages/ProfilePage/index';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <MainPage/>,
+  },
+  {
+    path: "/order",
+    element: <OrderPage/>,
   },
   {
     path: "/profile",

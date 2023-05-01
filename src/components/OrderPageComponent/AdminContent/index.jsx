@@ -44,17 +44,17 @@ export default function AdminContent({ token }) {
         try {
             const res = await axios.post("/v0/order/editStatus",
                 {
-                    
-                        "order": id,
-                        "status": status
-                    
+
+                    "order": id,
+                    "status": status
+
                 },
                 {
                     headers: {
                         'Authorization': `${token}`,
                     }
                 })
-                GetUserOrder();
+            GetUserOrder();
         } catch (error) {
             console.log(error);
         }
@@ -69,7 +69,7 @@ export default function AdminContent({ token }) {
             <Grid container spacing={2} rowSpacing={2}>
                 {userOrdersData?.map((item, index) => (
                     <Grid item xs={12} key={index} >
-                        <Box  sx={{ border: "2px solid #1976d2", borderRadius: "15px", padding: "15px" }}>
+                        <Box sx={{ border: "2px solid #1976d2", borderRadius: "15px", padding: "15px" }}>
                             <Box onClick={() => handleOpen(item)} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                 <Typography>Заявка №{item.id}</Typography>
                                 <Typography>Статус: <span> </span>
@@ -80,8 +80,10 @@ export default function AdminContent({ token }) {
                                 </Typography>
                             </Box>
                             <Box>
-                                <Button onClick={()=>ChangeStatus(item.id,2)} variant='outlined' sx={{ color: "green", mr: "15px" }}>Підтвердити</Button>
-                                <Button onClick={()=>ChangeStatus(item.id,3)}variant='outlined' sx={{ color: "red" }}>Відхилити</Button>
+                                {item.status !== 2 && <Button onClick={() => ChangeStatus(item.id, 2)} variant='outlined' sx={{ color: "green", mr: "15px" }}>Підтвердити</Button>
+                                }
+                                {item.status !== 3 && <Button onClick={() => ChangeStatus(item.id, 3)} variant='outlined' sx={{ color: "red" }}>Відхилити</Button>
+                                }
                             </Box>
                         </Box>
                     </Grid>

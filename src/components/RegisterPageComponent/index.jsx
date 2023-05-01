@@ -176,10 +176,10 @@ export default function RegisterPageComponent() {
                             onClick={()=>handleSubmit()}
                             fullWidth
                             variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
+                            sx={{ mt: 3, mb: 2 ,color: '#fff', backgroundColor: "rgb(39,39,42)", "&:hover":{backgroundColor: "rgba(39,39,42,0.9)"}}}
                             
                         >
-                            Увійти
+                            Зареєструйтеся
                         </Button>
                         {/* <Button
                             type="submit"

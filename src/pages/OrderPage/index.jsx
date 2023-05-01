@@ -4,11 +4,11 @@ import Cookies from 'js-cookie';
 
 import { useNavigate } from 'react-router-dom'
 //Page component
-import ProfilePageComponent from '../../components/ProfilePageComponent';
+import OrderPageComponent from '../../components/OrderPageComponent';
 
 
 
-export default function ProfilePage() {
+export default function OrderPage() {
     const navigate = useNavigate();
     const  token  = Cookies.get("token")
     useEffect(() => {
@@ -19,7 +19,7 @@ export default function ProfilePage() {
     
   return (
     <>
-        {token ? <ProfilePageComponent/> : <div>Ви не авторизовані</div>}
+        {token ? <OrderPageComponent/> : <div>Ви не авторизовані</div>}
     </>
   )
 }

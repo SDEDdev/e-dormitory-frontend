@@ -1,26 +1,25 @@
 import { useState,useEffect } from 'react'
-import { Box, Button, Grid, Modal, TextField, Typography } from '@mui/material'
+import { Alert, Box, Button, Grid, Modal, TextField, Typography } from '@mui/material'
 import axios from 'axios';
 
 
 
 export default function UserContent({ token }) {
-    const [userOrdersData, setuserOrdersData] = useState([]);
-
+    const [userOrdersData, setuserOrdersData] = useState(null);
+    const [status, setStatus] = useState({});
+    console.log(status);
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const NewOrder = (event) => {
+    const NewOrder = async(event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        for (const key of data.keys()) {
-            console.log(key);
-        }
+
 
         try {
-            const res = axios.post("/v0/order/create", data,
+            const res = await axios.post("/v0/order/create", data,
                 {
                     headers: {
                         'Authorization': `${token}`,
@@ -28,10 +27,13 @@ export default function UserContent({ token }) {
                     }
                 });
                 setOpen(false);
+                setStatus({msg:"Заявку успішно створено", type:"success"})
         } catch (error) {
             console.log(error);
+            
+            setStatus({msg:error?.response?.data?.errors[0]?.msg || "Невідома помилка!", type:"error"})
         }
-
+        GetUserOrder();
         //console.log(res); 
     }
 
@@ -54,23 +56,38 @@ export default function UserContent({ token }) {
     }
 
     const revokeOrder = async(id) =>{
-        const { data } = await axios.post("/v0/order/revoke", {},
+        try {
+           await axios.post("/v0/order/revoke", {},
             {
                 headers: {
                     'Authorization': `${token}`,
                 }
             });
+            GetUserOrder();
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     useEffect(() => {
         GetUserOrder();
     }, [])
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setStatus();
+        }, 3000);
+        return () => clearTimeout(timer);
+      }, [status]);
     return (
         <>
-            <Button sx={{ marginBottom: "35px" }} onClick={handleOpen} variant="contained" >Створити заявку</Button>
+        
+            <Button sx={{ marginBottom: "35px",backgroundColor:"#000","&:hover":{backgroundColor: "rgba(43,48,59,0.8)"} }} onClick={handleOpen} variant="contained" >Створити заявку</Button>
             {/* Order list */}
             <Grid container spacing={2} rowSpacing={2}>
-                {userOrdersData?.map((item, index) => (
+                {userOrdersData
+                    ?
+                    userOrdersData?.map((item, index) => (
                     <Grid item xs={12} key={index} >
                         <Box sx={{ border: "2px solid #1976d2", borderRadius: "15px", padding: "15px" }}>
                             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -91,7 +108,12 @@ export default function UserContent({ token }) {
                             {item.status === 1 && <Button onClick={()=>revokeOrder(item.id)}>Відкликати заявку</Button>}
                         </Box>
                     </Grid>
-                ))}
+                ))
+                :
+                <Typography>
+                    Тут поки пусто
+                </Typography>
+                }
             </Grid>
             <Modal
                 open={open}
@@ -104,7 +126,7 @@ export default function UserContent({ token }) {
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    width: "80vw",
+                    width: "95vw",
                     height: "80vh",
                     bgcolor: 'background.paper',
                     border: '2px solid #000',
@@ -118,7 +140,8 @@ export default function UserContent({ token }) {
                             {/* Прізвище */}
                             <Grid
                                 item
-                                xs={4}
+                                xs={12}
+                                sm={4}
                             >
                                 <TextField
                                     item
@@ -135,7 +158,8 @@ export default function UserContent({ token }) {
                             {/* Ім'я */}
                             <Grid
                                 item
-                                xs={4}
+                                xs={12}
+                                sm={4}
                             >
                                 <TextField
                                     item
@@ -150,7 +174,8 @@ export default function UserContent({ token }) {
                             </Grid>
                             {/* По-батькові */} <Grid
                                 item
-                                xs={4}
+                                xs={12}
+                                sm={4}
                             >
                                 <TextField
                                     item
@@ -167,7 +192,8 @@ export default function UserContent({ token }) {
                             {/* Факультет */}
                             <Grid
                                 item
-                                xs={4}
+                                xs={12}
+                                sm={4}
                             >
                                 <TextField
                                     item
@@ -182,7 +208,8 @@ export default function UserContent({ token }) {
                             {/* Курс */}
                             <Grid
                                 item
-                                xs={4}
+                                xs={12}
+                                sm={4}
                             >
                                 <TextField
                                     item
@@ -197,7 +224,8 @@ export default function UserContent({ token }) {
                             {/* Група */}
                             <Grid
                                 item
-                                xs={4}
+                                xs={12}
+                                sm={4}
                             >
                                 <TextField
                                     item
@@ -212,7 +240,8 @@ export default function UserContent({ token }) {
                             {/* Гуртожиток */}
                             <Grid
                                 item
-                                xs={4}
+                                xs={12}
+                                sm={4}
                             >
                                 <TextField
                                     item
@@ -227,7 +256,8 @@ export default function UserContent({ token }) {
                             {/* Паспорт номер */}
                             <Grid
                                 item
-                                xs={4}
+                                xs={12}
+                                sm={4}
                             >
                                 <TextField
                                     item
@@ -242,7 +272,8 @@ export default function UserContent({ token }) {
                             {/* Рпнппк */}
                             <Grid
                                 item
-                                xs={4}
+                                xs={12}
+                                sm={4}
                             >
                                 <TextField
                                     item
@@ -257,7 +288,8 @@ export default function UserContent({ token }) {
                             {/* фото паспорта 1 */}
                             <Grid
                                 item
-                                xs={4}
+                                xs={12}
+                                sm={4}
                             >
                                 <label htmlFor="passport">
                                     <input
@@ -279,7 +311,8 @@ export default function UserContent({ token }) {
                             {/* фото паспорта 2 */}
                             <Grid
                                 item
-                                xs={4}
+                                xs={12}
+                                sm={4}
                             >
                                 <label htmlFor="passport2">
                                     <input
@@ -300,7 +333,8 @@ export default function UserContent({ token }) {
                             {/* ідентифікаційний код */}
                             <Grid
                                 item
-                                xs={4}
+                                xs={12}
+                                sm={4}
                             >
                                 <label htmlFor="identification_code">
                                     <input
@@ -321,7 +355,8 @@ export default function UserContent({ token }) {
                             {/* медична довідка */}
                             <Grid
                                 item
-                                xs={4}
+                                xs={12}
+                                sm={4}
                             >
                                 <label htmlFor="medical_reference">
                                     <input
@@ -342,7 +377,8 @@ export default function UserContent({ token }) {
                             {/* Квитанція */}
                             <Grid
                                 item
-                                xs={4}
+                                xs={12}
+                                sm={4}
                             >
                                 <label htmlFor="receipt">
                                     <input
@@ -373,6 +409,8 @@ export default function UserContent({ token }) {
                     </Box>
                 </Box>
             </Modal>
+            {status?.msg && <Alert sx={{position:"absolute", top:"5px", right:"5px", zIndex:"99999999999"}} severity={status?.type}>{status?.msg}</Alert>}
+            
         </>
     )
 }

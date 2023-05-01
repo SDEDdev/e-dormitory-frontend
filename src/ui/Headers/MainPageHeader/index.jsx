@@ -4,15 +4,20 @@ import { Link } from 'react-router-dom';
 // MUI
 import { AppBar, Box, Button, Container, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemButton, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Cookies from 'js-cookie';
 
-import nookies, { parseCookies } from 'nookies'
+
+
 
 
 const drawerWidth = 240;
 export default function MainPageHeader(props) {
   const { window } = props;
+  const {typePage} = props || "notMain";
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const { token } = parseCookies()
+  const  token  = Cookies.get("token");
+  const user = JSON.parse(Cookies.get("user"));
 
 
   const handleDrawerToggle = () => {
@@ -48,11 +53,20 @@ export default function MainPageHeader(props) {
         {
           token
           &&
-          <ListItem disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }}>
-              <Link to={"/profile"}>Профіль</Link>
-            </ListItemButton>
-          </ListItem>
+          <>
+            <ListItem disablePadding>
+              <ListItemButton sx={{ textAlign: 'center' }}>
+                <Link to={"/order"}>Заявки</Link>
+              </ListItemButton>
+            </ListItem>
+
+            <ListItem disablePadding>
+              <ListItemButton sx={{ textAlign: 'center' }}>
+                <Link to={"/profile"}><AccountCircleIcon /> Акаунт</Link>
+              </ListItemButton>
+            </ListItem>
+          </>
+
         }
 
       </List>
@@ -64,22 +78,21 @@ export default function MainPageHeader(props) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar component="nav" position="static">
+      <AppBar component="nav" position="static" sx={{ backgroundColor: typePage === "main"? "#fff" : "rgb(39,39,42)"  }}>
         <Container>
           <Toolbar>
             <IconButton
-              color="inherit"
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: 'none' } }}
+              sx={{ mr: 2, display: { sm: 'none' } ,color: typePage === "main"? "#000": '#fff'}}
             >
               <MenuIcon />
             </IconButton>
             <Typography
               variant="h6"
               component="div"
-              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } ,fontWeight:"800",color: typePage === "main"? "#000": '#fff '}}
             >
               <Link to={"/"}>Є-поселення</Link>
             </Typography>
@@ -88,12 +101,12 @@ export default function MainPageHeader(props) {
                 &&
                 <>
                   {/* ---Login---- */}
-                  <Button sx={{ color: '#fff' }}>
+                  <Button sx={{ color: typePage === "main"? "#fff": '#000', backgroundColor: typePage === "main"? "rgb(43,48,59)": "#fff", marginRight: "15px", "&:hover":{backgroundColor: typePage === "main"? "rgba(43,48,59,0.8)":"#f0f0f0"}}} variant="contained">
                     <Link to={"/account/login"}>Увійти</Link>
                   </Button>
                   {/* ------- */}
                   {/* ---Register---- */}
-                  <Button sx={{ color: '#fff' }}>
+                  <Button sx={{ color: typePage === "main"? "#fff": '#000', backgroundColor: typePage === "main"? "rgb(43,48,59)": "#fff", "&:hover":{backgroundColor: typePage === "main"? "rgba(43,48,59,0.8)":"#f0f0f0"} }} variant="contained">
                     <Link to={"/account/sign-up"}>Реєстрація</Link>
                   </Button>
                   {/* ------- */}
@@ -101,13 +114,17 @@ export default function MainPageHeader(props) {
               }
               {token
                 &&
-                <>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
                   {/* ---Profile---- */}
-                  <Button sx={{ color: '#fff' }}>
-                    <Link to={"/profile"}>Профіль</Link>
+                  <Button sx={{ color: typePage === "main"? "#000": '#fff ' }} >
+                    <Link to={"/order"}>Заявки</Link>
                   </Button>
                   {/* ------- */}
-                </>
+                  {/* ---Profile---- */}
+                  <Button sx={{ color: typePage === "main"? "#000": '#fff '}}>
+                    <Link className='avatarLink' to={"/profile"}><AccountCircleIcon sx={{ fontSize: "35px", mr:"5px" }} />{user.email}</Link>
+                  </Button>
+                </Box>
               }
             </Box>
           </Toolbar>
