@@ -14,10 +14,10 @@ import Cookies from 'js-cookie';
 const drawerWidth = 240;
 export default function MainPageHeader(props) {
   const { window } = props;
-  const {typePage} = props || "notMain";
+  const { typePage } = props || "notMain";
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const  token  = Cookies.get("token");
-  const user = JSON.parse(Cookies.get("user")|| null);
+  const token = Cookies.get("token");
+  const user = JSON.parse(Cookies.get("user") || null);
 
 
   const handleDrawerToggle = () => {
@@ -54,11 +54,22 @@ export default function MainPageHeader(props) {
           token
           &&
           <>
-            <ListItem disablePadding>
-              <ListItemButton sx={{ textAlign: 'center' }}>
-                <Link to={"/order"}>Заявки</Link>
-              </ListItemButton>
-            </ListItem>
+            {user.roles[0] !== "admin"
+              &&
+              <ListItem disablePadding>
+                <ListItemButton sx={{ textAlign: 'center' }}>
+                  <Link to={"/order"}>Заявки</Link>
+                </ListItemButton>
+              </ListItem>
+            }
+            {user.roles[0] === "admin"
+              &&
+              <ListItem disablePadding>
+                <ListItemButton sx={{ textAlign: 'center' }}>
+                  <Link to={"/dasboard"}>Dasboard</Link>
+                </ListItemButton>
+              </ListItem>
+            }
 
             <ListItem disablePadding>
               <ListItemButton sx={{ textAlign: 'center' }}>
@@ -78,21 +89,21 @@ export default function MainPageHeader(props) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar component="nav" position="static" sx={{ backgroundColor: typePage === "main"? "#fff" : "rgb(39,39,42)"  }}>
+      <AppBar component="nav" position="static" sx={{ backgroundColor: typePage === "main" ? "#fff" : "rgb(39,39,42)" }}>
         <Container>
           <Toolbar>
             <IconButton
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: 'none' } ,color: typePage === "main"? "#000": '#fff'}}
+              sx={{ mr: 2, display: { sm: 'none' }, color: typePage === "main" ? "#000" : '#fff' }}
             >
               <MenuIcon />
             </IconButton>
             <Typography
               variant="h6"
               component="div"
-              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } ,fontWeight:"800",color: typePage === "main"? "#000": '#fff '}}
+              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, fontWeight: "800", color: typePage === "main" ? "#000" : '#fff ' }}
             >
               <Link to={"/"}>Є-поселення</Link>
             </Typography>
@@ -101,12 +112,12 @@ export default function MainPageHeader(props) {
                 &&
                 <>
                   {/* ---Login---- */}
-                  <Button sx={{ color: typePage === "main"? "#fff": '#000', backgroundColor: typePage === "main"? "rgb(43,48,59)": "#fff", marginRight: "15px", "&:hover":{backgroundColor: typePage === "main"? "rgba(43,48,59,0.8)":"#f0f0f0"}}} variant="contained">
+                  <Button sx={{ color: typePage === "main" ? "#fff" : '#000', backgroundColor: typePage === "main" ? "rgb(43,48,59)" : "#fff", marginRight: "15px", "&:hover": { backgroundColor: typePage === "main" ? "rgba(43,48,59,0.8)" : "#f0f0f0" } }} variant="contained">
                     <Link to={"/account/login"}>Увійти</Link>
                   </Button>
                   {/* ------- */}
                   {/* ---Register---- */}
-                  <Button sx={{ color: typePage === "main"? "#fff": '#000', backgroundColor: typePage === "main"? "rgb(43,48,59)": "#fff", "&:hover":{backgroundColor: typePage === "main"? "rgba(43,48,59,0.8)":"#f0f0f0"} }} variant="contained">
+                  <Button sx={{ color: typePage === "main" ? "#fff" : '#000', backgroundColor: typePage === "main" ? "rgb(43,48,59)" : "#fff", "&:hover": { backgroundColor: typePage === "main" ? "rgba(43,48,59,0.8)" : "#f0f0f0" } }} variant="contained">
                     <Link to={"/account/sign-up"}>Реєстрація</Link>
                   </Button>
                   {/* ------- */}
@@ -116,13 +127,22 @@ export default function MainPageHeader(props) {
                 &&
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   {/* ---Profile---- */}
-                  <Button sx={{ color: typePage === "main"? "#000": '#fff ' }} >
-                    <Link to={"/order"}>Заявки</Link>
-                  </Button>
+                  {user.roles[0] !== "admin"
+                    &&
+                    <Button sx={{ color: typePage === "main" ? "#000" : '#fff ' }} >
+                      <Link to={"/order"}>Заявки</Link>
+                    </Button>}
                   {/* ------- */}
+                  {/* -----AdminDasboard */}
+                  {user.roles[0] === "admin"
+                    &&
+                    <Button sx={{ color: typePage === "main" ? "#000" : '#fff ' }} >
+                      <Link to={"/dashboard"}>Dasboard</Link>
+                    </Button>}
+                  {/* ------------ */}
                   {/* ---Profile---- */}
-                  <Button sx={{ color: typePage === "main"? "#000": '#fff '}}>
-                    <Link className='avatarLink' to={"/profile"}><AccountCircleIcon sx={{ fontSize: "35px", mr:"5px" }} />{user?.email}</Link>
+                  <Button sx={{ color: typePage === "main" ? "#000" : '#fff ' }}>
+                    <Link className='avatarLink' to={"/profile"}><AccountCircleIcon sx={{ fontSize: "35px", mr: "5px" }} />{user?.email}</Link>
                   </Button>
                 </Box>
               }

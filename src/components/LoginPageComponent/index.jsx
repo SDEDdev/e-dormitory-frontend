@@ -28,7 +28,7 @@ export default function LoginPageComponent() {
     if (login && password) {
       try {
         setIsLogin(true)
-        const {data} = await axios.post("/v0/user/login", {
+        const { data } = await axios.post("/v0/user/login", {
           login: login,
           password: password,
         });
@@ -44,7 +44,12 @@ export default function LoginPageComponent() {
         })
         setIsError(false);
         setErrorMessage("");
-        navigate("/order");
+        if (data.user.roles[0] === "admin") {
+          navigate("/dashboard/users");
+        }
+        else {
+          navigate("/order");
+        }
       } catch (error) {
         setIsError(true);
         setErrorMessage(error.response.data.errors[0].msg || "Сталася помилка");
@@ -115,7 +120,7 @@ export default function LoginPageComponent() {
               onClick={() => handleSubmit()}
               fullWidth
               variant="contained"
-              sx={{mt: 3, mb: 2 , color: '#fff', backgroundColor: "rgb(39,39,42)", "&:hover":{backgroundColor: "rgba(39,39,42,0.9)"} }}
+              sx={{ mt: 3, mb: 2, color: '#fff', backgroundColor: "rgb(39,39,42)", "&:hover": { backgroundColor: "rgba(39,39,42,0.9)" } }}
               disabled={isLogin}
 
             >

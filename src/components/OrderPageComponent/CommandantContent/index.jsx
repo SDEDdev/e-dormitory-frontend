@@ -4,7 +4,7 @@ import axios from 'axios';
 
 
 
-export default function AdminContent({ token }) {
+export default function CommandantContent({ token }) {
     const [userOrdersData, setuserOrdersData] = useState([]);
     const [currentOrderData, setcurrentOrderData] = useState([]);
     console.log(currentOrderData);

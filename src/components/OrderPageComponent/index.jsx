@@ -2,7 +2,7 @@ import MainPageHeader from '../../ui/Headers/MainPageHeader'
 import { Container } from '@mui/material'
 
 import UserContent from './UserContent';
-import AdminContent from './AdminContent';
+import CommandantContent from './CommandantContent';
 import Cookies from 'js-cookie';
 
 
@@ -16,7 +16,9 @@ export default function ProfilePageComponent() {
             <MainPageHeader />
             <Container  sx={{marginTop:"20px"}}>
                 
-                {user.roles[0] === "user" ? <UserContent token={token} /> : <AdminContent token={token}/>}
+                {user.roles[0] === "user" && <UserContent token={token} />}
+                {user.roles[0] === "commandant" && <CommandantContent token={token}/>}
+                
             </Container>
 
         </>
