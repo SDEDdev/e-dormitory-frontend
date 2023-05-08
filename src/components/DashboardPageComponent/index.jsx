@@ -45,6 +45,17 @@ export default function DashboardPageComponent() {
                                     Гуртожитки
                                 </NavLink>
                             </Button>
+                            {/* --------- */}
+                            <Button sx={{ color: "#000", fontWeight: "600", fontSize: "18px" }}>
+                                <NavLink to={"benefits"}
+                                    style={({ isActive }) => {
+                                        return {
+                                            color: isActive ? "#62b42e" : "#000",
+                                        };
+                                    }}>
+                                    Пільги
+                                </NavLink>
+                            </Button>
                         </Grid>
                         <Grid item xs={10} sx={{ p: "15px" }}>
                             <Box sx={{width:"100%"}}>

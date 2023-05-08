@@ -24,16 +24,9 @@ export default function DormitoriesDashboardComponent() {
         setSelectionModel(newSelectionModel);
 
     };
-    console.log(selectionModel);
-
-
-
-
-
+ 
     useEffect(() => {
-
         getFacultiesList();
-
     }, [])
 
 

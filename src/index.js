@@ -21,6 +21,7 @@ import AdminPage from './pages/AdminPage';
 import UsersDashboardComponent from './components/DashboardPageComponent/UsersDPageComponent/index';
 import FacultiesDashboardComponent from './components/DashboardPageComponent/FacultiesDPageComponent';
 import DormitoriesDashboardComponent from './components/DashboardPageComponent/DormitoriesDPageComponent';
+import BenefitDashboardComponent from './components/DashboardPageComponent/BenefitsDPageComponent';
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: "dormitories",
         element: <DormitoriesDashboardComponent/>,
+      },
+      {
+        path: "benefits",
+        element: <BenefitDashboardComponent/>,
       },
     ],
   },

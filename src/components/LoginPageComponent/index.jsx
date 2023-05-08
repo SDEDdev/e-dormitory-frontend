@@ -35,12 +35,12 @@ export default function LoginPageComponent() {
         setIsLogin(false)
         console.log(data);
         Cookies.set('token', data.token, {
-          expires: 86400,
-          path: '/',
+          expires: 1,
+       
         })
         Cookies.set('user', JSON.stringify(data.user), {
-          expires: 86400,
-          path: '/',
+          expires: 1,
+      
         })
         setIsError(false);
         setErrorMessage("");
