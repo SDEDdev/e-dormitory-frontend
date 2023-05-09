@@ -144,13 +144,13 @@ export default function FacultiesDashboardComponent() {
                         }
                     }>
                         <Box component={"form"} onSubmit={addNewFaculties}>
-                            <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Створення нової пільги</Typography>
+                            <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Створення факультету</Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <TextField
                                         required
                                         id="outlined-required"
-                                        label="Назва пільги"
+                                        label="Назва факультету"
                                         name='name'
                                         fullWidth
                                     />
@@ -194,7 +194,7 @@ export default function FacultiesDashboardComponent() {
                         }
                     }>
                         <Box component={"form"} onSubmit={editFaculties}>
-                            <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування пільги</Typography>
+                            <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування факультету</Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <TextField

@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
-import { Alert, Box, Button, CircularProgress, Fade, Grid, MenuItem, Modal, Select, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Fade, Grid, MenuItem, Modal, Select, Switch, TextField, Typography } from '@mui/material';
 
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 
-const columns = [
-    { field: 'id', headerName: 'ID', width: 70, },
-    { field: 'name', headerName: 'Назва пільги', width: 220, },
-    { field: 'discount', headerName: 'Знижка(%)', width: 220, },
-    // { field: 'available', headerName: 'Знижка', width: 220, },
 
-
-];
 
 
 export default function BenefitDashboardComponent() {
@@ -25,7 +18,7 @@ export default function BenefitDashboardComponent() {
     //Modals
     const [openAddBenefitModal, setopenAddBenefitModal] = useState(false);
     const [openEditBenefitModal, setopenEditBenefitModal] = useState(false);
-    
+
     //Alet
     const [notification, setNotification] = useState({ isOpen: false, msg: "", status: "" });
 
@@ -40,7 +33,7 @@ export default function BenefitDashboardComponent() {
         }, 2000);
         return () => clearTimeout(timer);
     }, [notification.isOpen]);
-    
+
 
     useEffect(() => {
         getBenefitList();
@@ -61,14 +54,14 @@ export default function BenefitDashboardComponent() {
     }
 
 
-    const addNewUser = async (event) => {
+    const addNewBenefits = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const body = {
             name: data.get("name"),
             discount: data.get("discount"),
         }
-        if(body.discount>100 || body.discount<0) return setNotification({ isOpen: true, msg: "Знижка вказана невірно (0-100%)", status: "error" });
+        if (body.discount > 100 || body.discount < 0) return setNotification({ isOpen: true, msg: "Знижка вказана невірно (0-100%)", status: "error" });
         try {
             axios.post("/v0/benefit/create", body);
             setopenAddBenefitModal(false);
@@ -79,7 +72,7 @@ export default function BenefitDashboardComponent() {
             setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
         }
     }
-    const editUser = async (event) => {
+    const editBenefits = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const body = {
@@ -87,7 +80,7 @@ export default function BenefitDashboardComponent() {
             name: data.get("name"),
             discount: data.get("discount"),
         }
-        if(body.discount>100 || body.discount<0) return setNotification({ isOpen: true, msg: "Знижка вказана невірно (0-100%)", status: "error" });
+        if (body.discount > 100 || body.discount < 0) return setNotification({ isOpen: true, msg: "Знижка вказана невірно (0-100%)", status: "error" });
         try {
             await axios.patch("/v0/benefit/edit", body);
             setopenEditBenefitModal(false);
@@ -96,6 +89,14 @@ export default function BenefitDashboardComponent() {
         } catch (error) {
             console.log(error);
             setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
+        }
+    }
+    const changeStatus = async(id)=>{
+        try {
+            await axios.patch("/v0/benefit/changeStatus",{id:id})
+            console.log("change");
+        } catch (error) {
+            console.log("err");
         }
     }
 
@@ -107,6 +108,22 @@ export default function BenefitDashboardComponent() {
             }
         }
     }
+
+    const columns = [
+        { field: 'id', headerName: 'ID', width: 70, },
+        { field: 'name', headerName: 'Назва пільги', width: 220, },
+        { field: 'discount', headerName: 'Знижка(%)', width: 220, },
+        {
+            field: 'available', headerName: 'Статуc', width: 80,
+            sortable: false,
+            filterable: false,
+            renderCell: (params) => (
+                <Switch sx={{ position: "relative", zIndex: "9999" }} defaultChecked={params.row.available === 1 ? true : false} onChange={()=>{changeStatus(params.row.id)}}/>
+            ),
+        },
+    
+    
+    ];
     return (
         <Box sx={{ minHeight: "70vh", width: '100%' }}>
             {/* Function Button */}
@@ -128,6 +145,7 @@ export default function BenefitDashboardComponent() {
                     }}
                     pageSizeOptions={[25, 50]}
                     checkboxSelection
+                    disableRowSelectionOnClick
                     onRowSelectionModelChange={handleSelectionModelChange}
                     rowSelectionModel={selectionModel}
                 />
@@ -160,7 +178,7 @@ export default function BenefitDashboardComponent() {
                             p: 4,
                         }
                     }>
-                        <Box component={"form"} onSubmit={addNewUser}>
+                        <Box component={"form"} onSubmit={addNewBenefits}>
                             <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Створення нового користувача</Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
@@ -198,7 +216,7 @@ export default function BenefitDashboardComponent() {
                     </Box>
                 </Fade>
             </Modal>
-            {/* EditUser Modal */}
+            {/* editBenefits Modal */}
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
@@ -226,7 +244,7 @@ export default function BenefitDashboardComponent() {
                             p: 4,
                         }
                     }>
-                        <Box component={"form"} onSubmit={editUser}>
+                        <Box component={"form"} onSubmit={editBenefits}>
                             <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування користувача</Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
