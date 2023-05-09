@@ -66,7 +66,7 @@ export default function MainPageHeader(props) {
               &&
               <ListItem disablePadding>
                 <ListItemButton sx={{ textAlign: 'center' }}>
-                  <Link to={"/dasboard"}>Dasboard</Link>
+                  <Link to={"/dasboard/users"}>Dasboard</Link>
                 </ListItemButton>
               </ListItem>
             }
@@ -137,7 +137,7 @@ export default function MainPageHeader(props) {
                   {user.roles[0] === "admin"
                     &&
                     <Button sx={{ color: typePage === "main" ? "#000" : '#fff ' }} >
-                      <Link to={"/dashboard"}>Dasboard</Link>
+                      <Link to={"/dashboard/users"}>Dasboard</Link>
                     </Button>}
                   {/* ------------ */}
                   {/* ---Profile---- */}

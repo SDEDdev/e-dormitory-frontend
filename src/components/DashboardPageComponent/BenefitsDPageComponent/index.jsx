@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
-import { Box, Button, CircularProgress, Fade, Grid, MenuItem, Modal, Select, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Fade, Grid, MenuItem, Modal, Select, TextField, Typography } from '@mui/material';
 
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -10,8 +10,8 @@ import EditIcon from '@mui/icons-material/Edit';
 const columns = [
     { field: 'id', headerName: 'ID', width: 70, },
     { field: 'name', headerName: 'Назва пільги', width: 220, },
-    { field: 'discount', headerName: 'Знижка', width: 220, },
-    { field: 'available', headerName: 'Знижка', width: 220, },
+    { field: 'discount', headerName: 'Знижка(%)', width: 220, },
+    // { field: 'available', headerName: 'Знижка', width: 220, },
 
 
 ];
@@ -25,11 +25,22 @@ export default function BenefitDashboardComponent() {
     //Modals
     const [openAddBenefitModal, setopenAddBenefitModal] = useState(false);
     const [openEditBenefitModal, setopenEditBenefitModal] = useState(false);
+    
+    //Alet
+    const [notification, setNotification] = useState({ isOpen: false, msg: "", status: "" });
 
     const handleSelectionModelChange = (newSelectionModel) => {
         setSelectionModel(newSelectionModel);
     };
-    console.log(selectionModel);
+
+    useEffect(() => {
+
+        const timer = setTimeout(() => {
+            setNotification({ isOpen: false, msg: "", status: "" });
+        }, 2000);
+        return () => clearTimeout(timer);
+    }, [notification.isOpen]);
+    
 
     useEffect(() => {
         getBenefitList();
@@ -49,46 +60,52 @@ export default function BenefitDashboardComponent() {
         }
     }
 
-     //Створення нового юзера
-     const addNewUser = async (event) => {
+
+    const addNewUser = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const body = {
             name: data.get("name"),
             discount: data.get("discount"),
         }
+        if(body.discount>100 || body.discount<0) return setNotification({ isOpen: true, msg: "Знижка вказана невірно (0-100%)", status: "error" });
         try {
             axios.post("/v0/benefit/create", body);
             setopenAddBenefitModal(false);
             getBenefitList();
+            setNotification({ isOpen: true, msg: "Пільгу створено", status: "success" });
         } catch (error) {
             console.log(error);
+            setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
         }
     }
     const editUser = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const body = {
-            id:selectionModel[0],
+            id: selectionModel[0],
             name: data.get("name"),
             discount: data.get("discount"),
         }
+        if(body.discount>100 || body.discount<0) return setNotification({ isOpen: true, msg: "Знижка вказана невірно (0-100%)", status: "error" });
         try {
             await axios.patch("/v0/benefit/edit", body);
             setopenEditBenefitModal(false);
             getBenefitList()
+            setNotification({ isOpen: true, msg: "Пільгу оновлено", status: "success" });
         } catch (error) {
             console.log(error);
+            setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
         }
     }
 
-    const findItemInState =(userId)=>{   
+    const findItemInState = (userId) => {
         for (let i = 0; i < benefitList.length; i++) {
             if (userId === benefitList[i].id) {
                 return i;
 
             }
-        }   
+        }
     }
     return (
         <Box sx={{ minHeight: "70vh", width: '100%' }}>
@@ -106,17 +123,17 @@ export default function BenefitDashboardComponent() {
                     columns={columns}
                     initialState={{
                         pagination: {
-                            paginationModel: { page: 0, pageSize: 5 },
+                            paginationModel: { page: 0, pageSize: 25 },
                         },
                     }}
-                    pageSizeOptions={[5, 10]}
+                    pageSizeOptions={[25, 50]}
                     checkboxSelection
                     onRowSelectionModelChange={handleSelectionModelChange}
                     rowSelectionModel={selectionModel}
                 />
             }
-                        {/* AddUser Modal */}
-                        <Modal
+            {/* AddUser Modal */}
+            <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
                 open={openAddBenefitModal}
@@ -165,7 +182,7 @@ export default function BenefitDashboardComponent() {
                                         fullWidth
                                     />
                                 </Grid>
-                                
+
                                 <Grid item xs={12}>
                                     <Button type="submit" variant='contained' color="success">
                                         Додати
@@ -248,6 +265,9 @@ export default function BenefitDashboardComponent() {
                     </Box>
                 </Fade>
             </Modal>
+            {notification.isOpen &&
+                <Alert sx={{ position: "absolute", top: "55px", right: "10px", zIndex: "99999" }} severity={notification.status}>{notification.msg}</Alert>
+            }
         </Box>
     )
 }

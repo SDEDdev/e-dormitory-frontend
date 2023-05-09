@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
-import { Box, Button, CircularProgress, Fade, Grid, MenuItem, Modal, Select, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Fade, Grid, MenuItem, Modal, Select, TextField, Typography } from '@mui/material';
 
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
+import { UserApi } from '../../../api/UsersApi';
 
 const columns = [
     { field: 'id', headerName: 'ID', width: 70, },
@@ -28,15 +29,21 @@ export default function UsersDashboardComponent() {
     const [openAddUserModal, setopenAddUserModal] = useState(false);
     const [openEditUserModal, setopenEditUserModal] = useState(false);
 
+    //Alet
+    const [notification, setNotification] = useState({ isOpen: false, msg: "", status: "" });
+
     const handleSelectionModelChange = (newSelectionModel) => {
         setSelectionModel(newSelectionModel);
 
     };
-    console.log(selectionModel);
 
+    useEffect(() => {
 
-
-
+        const timer = setTimeout(() => {
+            setNotification({ isOpen: false, msg: "", status: "" });
+        }, 2000);
+        return () => clearTimeout(timer);
+    }, [notification.isOpen]);
 
     useEffect(() => {
 
@@ -48,7 +55,7 @@ export default function UsersDashboardComponent() {
     const getUserList = async () => {
         setIsLoading(true);
         try {
-            const { data } = await axios.get("/v0/user/list")
+            const data = await UserApi.getUsers();
             console.log(data);
             setusersList(data)
             setIsLoading(false)
@@ -69,38 +76,42 @@ export default function UsersDashboardComponent() {
             role: data.get("role"),
         }
         try {
-            axios.post("/v0/user/register", body);
+            await UserApi.addNewUser(body);
             setopenAddUserModal(false);
             getUserList();
+            setNotification({ isOpen: true, msg: "Користувача створено", status: "success" });
         } catch (error) {
             console.log(error);
+            setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
         }
     }
     const editUser = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const body = {
-            id:selectionModel[0],
+            id: selectionModel[0],
             email: data.get("email"),
             phone: data.get("phone"),
             password: data.get("password"),
         }
         try {
-            axios.patch("/v0/user/edit", body);
+            await UserApi.editUser(body);
             setopenEditUserModal(false);
-            getUserList()
+            getUserList();
+            setNotification({ isOpen: true, msg: "Користувача відредаговано", status: "success" });
         } catch (error) {
             console.log(error);
+            setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
         }
     }
 
-    const findUserInState =(userId)=>{   
+    const findUserInState = (userId) => {
         for (let i = 0; i < usersList.length; i++) {
             if (userId === usersList[i].id) {
                 return i;
 
             }
-        }   
+        }
     }
     return (
         <Box sx={{ minHeight: "70vh", width: '100%' }}>
@@ -118,10 +129,10 @@ export default function UsersDashboardComponent() {
                     columns={columns}
                     initialState={{
                         pagination: {
-                            paginationModel: { page: 0, pageSize: 5 },
+                            paginationModel: { page: 0, pageSize: 25 },
                         },
                     }}
-                    pageSizeOptions={[5, 10]}
+                    pageSizeOptions={[25, 50]}
                     checkboxSelection
                     onRowSelectionModelChange={handleSelectionModelChange}
                     rowSelectionModel={selectionModel}
@@ -272,7 +283,7 @@ export default function UsersDashboardComponent() {
 
                                 <Grid item xs={12}>
                                     <TextField
-                                        
+
                                         id="outlined-required"
                                         label="Пароль"
                                         name='password'
@@ -308,6 +319,10 @@ export default function UsersDashboardComponent() {
                     </Box>
                 </Fade>
             </Modal>
+
+            {notification.isOpen &&
+                <Alert sx={{ position: "absolute", top: "55px", right: "10px",  zIndex: "99999" }} severity={notification.status}>{notification.msg}</Alert>
+            }
         </Box>
     )
 }
