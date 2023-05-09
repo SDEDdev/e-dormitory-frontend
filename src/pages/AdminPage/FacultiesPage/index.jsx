@@ -3,12 +3,14 @@ import React, { useEffect } from 'react'
 import Cookies from 'js-cookie';
 
 import { useNavigate } from 'react-router-dom'
-//Page component
+import FacultiesDashboardComponent from '../../../components/DashboardPageComponent/FacultiesDPageComponent';
 
 
 
 
-export default function BenefitsPage() {
+
+
+export default function FacultiesPage() {
     const navigate = useNavigate();
     const  token  = Cookies.get("token")
     useEffect(() => {
@@ -19,7 +21,7 @@ export default function BenefitsPage() {
     
   return (
     <>
-        {token ? "" : <div>Ви не авторизовані</div>}
+        {token ? <FacultiesDashboardComponent/> : <div>Ви не авторизовані</div>}
     </>
   )
 }

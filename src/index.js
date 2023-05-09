@@ -18,10 +18,10 @@ import RegisterPage from './pages/RegisterPage';
 import OrderPage from './pages/OrderPage';
 import ProfilePage from './pages/ProfilePage/index';
 import AdminPage from './pages/AdminPage';
-import UsersDashboardComponent from './components/DashboardPageComponent/UsersDPageComponent/index';
-import FacultiesDashboardComponent from './components/DashboardPageComponent/FacultiesDPageComponent';
-import DormitoriesDashboardComponent from './components/DashboardPageComponent/DormitoriesDPageComponent';
-import BenefitDashboardComponent from './components/DashboardPageComponent/BenefitsDPageComponent';
+import BenefitsPage from './pages/AdminPage/BenefitsPage';
+import DormitoriesPage from './pages/AdminPage/Dormitories';
+import FacultiesPage from './pages/AdminPage/FacultiesPage';
+import UsersPage from './pages/AdminPage/UsersPage';
 
 const router = createBrowserRouter([
   {
@@ -42,19 +42,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: "users",
-        element: <UsersDashboardComponent/>,
+        element: <UsersPage/>,
       },
       {
         path: "faculties",
-        element: <FacultiesDashboardComponent/>,
+        element: <FacultiesPage/>,
       },
       {
         path: "dormitories",
-        element: <DormitoriesDashboardComponent/>,
+        element: <DormitoriesPage/>,
       },
       {
         path: "benefits",
-        element: <BenefitDashboardComponent/>,
+        element: <BenefitsPage/>,
       },
     ],
   },
@@ -68,6 +68,7 @@ const router = createBrowserRouter([
   },
 ]);
 const  token  = Cookies.get("token");
+console.log(token);
 axios.defaults.baseURL = process.env.REACT_APP_API;
 axios.defaults.headers.common['Authorization'] = token;
 axios.defaults.withCredentials = true;
