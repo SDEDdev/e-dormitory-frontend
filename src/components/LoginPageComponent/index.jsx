@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 // Router
 import { Link, useNavigate } from 'react-router-dom';
 // 
@@ -6,9 +6,9 @@ import MainPageHeader from '../../ui/Headers/MainPageHeader/index.jsx';
 // MUI
 import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import axios from 'axios';
 // 
 import Cookies from 'js-cookie';
+import { auth } from '../../api/AuthApi.js';
 
 //import Turnstile from "react-turnstile";
 
@@ -28,7 +28,7 @@ export default function LoginPageComponent() {
     if (login && password) {
       try {
         setIsLogin(true)
-        const { data } = await axios.post("/v0/user/login", {
+        const data = await auth.Login({
           login: login,
           password: password,
         });
@@ -36,11 +36,11 @@ export default function LoginPageComponent() {
         console.log(data);
         Cookies.set('token', data.token, {
           expires: 1,
-       
+
         })
         Cookies.set('user', JSON.stringify(data.user), {
           expires: 1,
-      
+
         })
         setIsError(false);
         setErrorMessage("");

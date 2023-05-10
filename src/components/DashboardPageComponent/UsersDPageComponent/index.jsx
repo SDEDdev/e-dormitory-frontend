@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
-import axios from 'axios';
 import { Alert, Box, Button, CircularProgress, Fade, Grid, MenuItem, Modal, Select, TextField, Typography } from '@mui/material';
 
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
-import { UserApi } from '../../../api/UsersApi';
+import { UserApi } from '../../../api/DashBoard/UsersApi';
+import Cookies from 'js-cookie';
+
 
 const columns = [
     { field: 'id', headerName: 'ID', width: 70, },
@@ -26,6 +27,8 @@ const columns = [
 
 
 export default function UsersDashboardComponent() {
+    const  token  = Cookies.get("token");
+
     const [usersList, setusersList] = useState([])
     const [selectionModel, setSelectionModel] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -51,9 +54,7 @@ export default function UsersDashboardComponent() {
     }, [notification.isOpen]);
 
     useEffect(() => {
-
         getUserList();
-
     }, [])
 
 

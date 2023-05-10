@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import axios from 'axios';
 
-import Cookies from 'js-cookie';
 
 // React router
 import {
@@ -67,11 +66,10 @@ const router = createBrowserRouter([
     element:<RegisterPage/>
   },
 ]);
-const  token  = Cookies.get("token");
-console.log(token);
+
+
 axios.defaults.baseURL = process.env.REACT_APP_API;
-axios.defaults.headers.common['Authorization'] = token;
-axios.defaults.withCredentials = true;
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
