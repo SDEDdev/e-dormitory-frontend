@@ -10,7 +10,8 @@ import { findItemInState } from '../../../utils/findUserInState';
 
 const columns = [
     { field: 'id', headerName: 'ID', width: 70, },
-    { field: 'name', headerName: 'Назва факультету', width: 220, },
+    { field: 'number', headerName: 'Номер гуртожитку', width: 220, },
+    { field: 'email', headerName: 'Пошта коменданта', width: 220, },
 
 
 ];
@@ -90,11 +91,24 @@ export default function DormitoriesDashboardComponent() {
             setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
         }
     }
+
+    const deleteDormitories = async() =>{
+        for(let i=0; i < selectionModel.length; i++ ){
+            try {
+                await axios.delete("/v0/dormitory", {params:{id:selectionModel[i]}});
+                setNotification({ isOpen: true, msg: "Факульет видалено", status: "success" });
+            } catch (error) {
+                console.log(error);
+                setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
+            }
+        }
+        getDormitoriesList();
+    }
     return (
         <Box sx={{ minHeight: "70vh", width: '100%' }}>
             {/* Function Button */}
             <Box sx={{ mb: "15px" }}>
-                <Button sx={{ mr: '15px' }} disabled={!selectionModel.length} variant='contained' color="error" startIcon={<DeleteForeverIcon />}>Видалити</Button>
+                <Button sx={{ mr: '15px' }} onClick={deleteDormitories} disabled={!selectionModel.length} variant='contained' color="error" startIcon={<DeleteForeverIcon />}>Видалити</Button>
                 <Button sx={{ mr: '15px' }} onClick={() => { setopenAddDormitoriesModal(true) }} variant='contained' color="success" startIcon={<AddCircleIcon />}>Додати гуртожиток</Button>
                 <Button sx={{ mr: '15px' }} onClick={() => { setopenEditDormitoriesModal(true) }} disabled={selectionModel.length > 1 || selectionModel.length < 1} variant='contained' color="success" startIcon={<EditIcon />}>Редагувати дані про гуртожиток</Button>
             </Box>

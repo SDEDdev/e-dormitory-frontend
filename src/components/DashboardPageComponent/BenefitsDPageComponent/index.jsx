@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
-import { Alert, Box, Button, CircularProgress, Fade, Grid, MenuItem, Modal, Select, Switch, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Fade, Grid, Modal, Switch, TextField, Typography } from '@mui/material';
 
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -108,6 +108,18 @@ export default function BenefitDashboardComponent() {
             }
         }
     }
+    const deletebenefits = async() =>{
+        for(let i=0; i < selectionModel.length; i++ ){
+            try {
+                await axios.delete("/v0/dormitory", {params:{id:selectionModel[i]}});
+                setNotification({ isOpen: true, msg: "Факульет видалено", status: "success" });
+            } catch (error) {
+                console.log(error);
+                setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
+            }
+        }
+        getBenefitList();
+    }
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 70, },
@@ -128,7 +140,7 @@ export default function BenefitDashboardComponent() {
         <Box sx={{ minHeight: "70vh", width: '100%' }}>
             {/* Function Button */}
             <Box sx={{ mb: "15px" }}>
-                <Button sx={{ mr: '15px' }} disabled={!selectionModel.length} variant='contained' color="error" startIcon={<DeleteForeverIcon />}>Видалити</Button>
+                <Button sx={{ mr: '15px' }} onClick={deletebenefits} disabled={!selectionModel.length} variant='contained' color="error" startIcon={<DeleteForeverIcon />}>Видалити</Button>
                 <Button sx={{ mr: '15px' }} onClick={() => { setopenAddBenefitModal(true) }} variant='contained' color="success" startIcon={<AddCircleIcon />}>Додати пільгу</Button>
                 <Button sx={{ mr: '15px' }} onClick={() => { setopenEditBenefitModal(true) }} disabled={selectionModel.length > 1 || selectionModel.length < 1} variant='contained' color="success" startIcon={<EditIcon />}>Редагувати дані про пільгу</Button>
             </Box>

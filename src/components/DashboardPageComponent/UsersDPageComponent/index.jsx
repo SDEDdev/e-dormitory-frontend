@@ -16,6 +16,11 @@ const columns = [
         headerName: 'Телефон',
         width: 150,
     },
+    {
+        field: 'role_name',
+        headerName: 'Роль',
+        width: 150,
+    },
 
 ];
 

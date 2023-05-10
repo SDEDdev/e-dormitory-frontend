@@ -64,10 +64,11 @@ export default function FacultiesDashboardComponent() {
             name: data.get("name"),
         }
         try {
-            axios.post("/v0/faculties/create", body);
+           await axios.post("/v0/faculties/create", body);
             setopenAddFacultiesModal(false);
             getFacultiesList();
             setNotification({ isOpen: true, msg: "Факульет створено", status: "success" });
+           
         } catch (error) {
             console.log(error);
             setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
@@ -90,11 +91,24 @@ export default function FacultiesDashboardComponent() {
             setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
         }
     }
+
+    const deleteFaculties = async() =>{
+        for(let i=0; i < selectionModel.length; i++ ){
+            try {
+                await axios.delete("/v0/faculties", {params:{id:selectionModel[i]}});
+                setNotification({ isOpen: true, msg: "Факульет видалено", status: "success" });
+            } catch (error) {
+                console.log(error);
+                setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
+            }
+        }
+        getFacultiesList();
+    }
     return (
         <Box sx={{ minHeight: "70vh", width: '100%' }}>
             {/* Function Button */}
             <Box sx={{ mb: "15px" }}>
-                <Button sx={{ mr: '15px' }} disabled={!selectionModel.length} variant='contained' color="error" startIcon={<DeleteForeverIcon />}>Видалити</Button>
+                <Button sx={{ mr: '15px' }} onClick={deleteFaculties}  disabled={!selectionModel.length} variant='contained' color="error" startIcon={<DeleteForeverIcon />}>Видалити</Button>
                 <Button sx={{ mr: '15px' }} onClick={() => { setopenAddFacultiesModal(true) }} variant='contained' color="success" startIcon={<AddCircleIcon />}>Додати Факультет</Button>
                 <Button sx={{ mr: '15px' }} onClick={() => { setopenEditFacultiesModal(true) }} disabled={selectionModel.length > 1 || selectionModel.length < 1} variant='contained' color="success" startIcon={<EditIcon />}>Редагувати дані про факультет</Button>
             </Box>
@@ -222,7 +236,7 @@ export default function FacultiesDashboardComponent() {
                 </Fade>
             </Modal>
             {notification.isOpen &&
-                <Alert sx={{ position: "absolute", top: "55px", right: "10px",zIndex:"99" }} severity={notification.status}>{notification.msg}</Alert>
+                <Alert sx={{ position: "absolute", top: "55px", right: "10px",zIndex:"9999" }} severity={notification.status}>{notification.msg}</Alert>
             }
         </Box>
     )

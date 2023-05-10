@@ -13,4 +13,5 @@ export const UserApi = {
         const {data} = await axios.patch("/v0/user/edit",body);
         return data;
     }
+    
 }
