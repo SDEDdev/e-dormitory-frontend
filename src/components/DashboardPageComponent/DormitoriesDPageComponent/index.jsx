@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
-import { Alert, Box, Button, CircularProgress, Fade, Grid, Modal, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Fade, FormControl, Grid, InputLabel, MenuItem, Modal, Select, TextField, Typography } from '@mui/material';
 
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import { findItemInState } from '../../../utils/findUserInState';
-
-const columns = [
-    { field: 'id', headerName: 'ID', width: 70, },
-    { field: 'number', headerName: 'Номер гуртожитку', width: 220, },
-    { field: 'email', headerName: 'Пошта коменданта', width: 220, },
+import { FacultiesApi } from '../../../api/DashBoard/FacultiesApi';
+import { UserApi } from '../../../api/DashBoard/UsersApi';
 
 
-];
 
 
 export default function DormitoriesDashboardComponent() {
-    const [dormitoriesList, setdormitoriesList] = useState([])
+    const [dormitoriesList, setdormitoriesList] = useState([]); //Список гуртожитків
+    const [facultiesList, setfacultiesList] = useState([]); //Список факультетів для випадаючого списку
+    const [adminList, setadminList] = useState([]); //Список адмінстраторів гуртожитків для випадаючого списку
+    const [currEditDorm, setcurrEditDorm] = useState(); //Поточний гуртожиток, який редагується
+
     const [selectionModel, setSelectionModel] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -43,9 +43,11 @@ export default function DormitoriesDashboardComponent() {
 
     useEffect(() => {
         getDormitoriesList();
+        getFaculties();
+        getDormitoryAdmins();
     }, [])
 
-
+    //Отримання списку всіх гуртожитків
     const getDormitoriesList = async () => {
         setIsLoading(true);
         try {
@@ -58,7 +60,8 @@ export default function DormitoriesDashboardComponent() {
             setIsLoading(false)
         }
     }
-    const addNewFaculties = async (event) => {
+    //Додавання номеру гуртожитку
+    const addNewDormitories = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const body = {
@@ -74,13 +77,10 @@ export default function DormitoriesDashboardComponent() {
             setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
         }
     }
-    const editFaculties = async (event) => {
+    //Редагування гуртожитку
+    const editDormitories = async (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        const body = {
-            id: selectionModel[0],
-            number: data.get("number"),
-        }
+        const body = currEditDorm;
         try {
             await axios.patch("/v0/dormitory/edit", body);
             setopenEditDormitoriesModal(false);
@@ -91,11 +91,11 @@ export default function DormitoriesDashboardComponent() {
             setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
         }
     }
-
-    const deleteDormitories = async() =>{
-        for(let i=0; i < selectionModel.length; i++ ){
+    // Видалення гуртожитків
+    const deleteDormitories = async () => {
+        for (let i = 0; i < selectionModel.length; i++) {
             try {
-                await axios.delete("/v0/dormitory", {params:{id:selectionModel[i]}});
+                await axios.delete("/v0/dormitory", { params: { id: selectionModel[i] } });
                 setNotification({ isOpen: true, msg: "Факульет видалено", status: "success" });
             } catch (error) {
                 console.log(error);
@@ -104,13 +104,82 @@ export default function DormitoriesDashboardComponent() {
         }
         getDormitoriesList();
     }
+    //Запис поточного редагованого гуртожитку
+    const getCurrEditDormitory = () => {
+        setcurrEditDorm(dormitoriesList[findItemInState(selectionModel[0], dormitoriesList)])
+    }
+    //Редагування факультетів в поточному гуртожитку
+    const editFacultiesInDorm = (action, name) => {
+
+        if (action === "add") {
+            if (!currEditDorm?.faculties.includes(name)) {
+                setcurrEditDorm({
+                    ...currEditDorm,
+                    faculties: [...currEditDorm?.faculties, name]
+                });
+            }
+
+            // setfacultiesList(facultiesList.filter(facult => facult.name !== name));
+        }
+        if (action === "remove") {
+
+            setcurrEditDorm(
+                {
+                    ...currEditDorm,
+                    faculties: currEditDorm?.faculties.filter(facult => facult !== name)
+                }
+            );
+            //setfacultiesList([...facultiesList, {name:name}]);
+
+        }
+
+    }
+    const getFaculties = async () => {
+        try {
+            const data = await FacultiesApi.getFaculties();
+            setfacultiesList(data);
+        } catch (error) {
+
+        }
+    }
+    const getDormitoryAdmins = async () => {
+        try {
+            const data = await UserApi.getUsers({ params: { filter: "dormitory_admin" } });
+            setadminList(data);
+            console.log(data);
+        } catch (error) {
+
+        }
+    }
+
+
+    console.log(currEditDorm);
+    const columns = [
+        { field: 'id', headerName: 'ID', width: 70, },
+        { field: 'number', headerName: 'Номер гуртожитку', width: 220, },
+        { field: 'email', headerName: 'Пошта коменданта', width: 220, },
+        {
+            field: 'faculties', headerName: 'Прив`язані факультети', width: 220,
+            renderCell: (params) => {
+                params.row.faculties.map((element,index) => <Typography key={index} sx={{ margin: "0 5px", border: "1px solid #fff" }}>{element}</Typography>)
+
+            },
+        },
+    ];
+
+
+
     return (
         <Box sx={{ minHeight: "70vh", width: '100%' }}>
             {/* Function Button */}
             <Box sx={{ mb: "15px" }}>
                 <Button sx={{ mr: '15px' }} onClick={deleteDormitories} disabled={!selectionModel.length} variant='contained' color="error" startIcon={<DeleteForeverIcon />}>Видалити</Button>
                 <Button sx={{ mr: '15px' }} onClick={() => { setopenAddDormitoriesModal(true) }} variant='contained' color="success" startIcon={<AddCircleIcon />}>Додати гуртожиток</Button>
-                <Button sx={{ mr: '15px' }} onClick={() => { setopenEditDormitoriesModal(true) }} disabled={selectionModel.length > 1 || selectionModel.length < 1} variant='contained' color="success" startIcon={<EditIcon />}>Редагувати дані про гуртожиток</Button>
+                <Button sx={{ mr: '15px' }} onClick={() => {
+                    setopenEditDormitoriesModal(true);
+                    getCurrEditDormitory();
+                }}
+                    disabled={selectionModel.length > 1 || selectionModel.length < 1} variant='contained' color="success" startIcon={<EditIcon />}>Редагувати дані про гуртожиток</Button>
             </Box>
             {isLoading ? <Box sx={{ width: "100%", height: "100%", display: "flex", justifyContent: "center" }}><CircularProgress /></Box>
                 :
@@ -161,7 +230,7 @@ export default function DormitoriesDashboardComponent() {
                             p: 4,
                         }
                     }>
-                        <Box component={"form"} onSubmit={addNewFaculties}>
+                        <Box component={"form"} onSubmit={addNewDormitories}>
                             <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Створення факультету</Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
@@ -188,7 +257,11 @@ export default function DormitoriesDashboardComponent() {
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
                 open={openEditDormitoriesModal}
-                onClose={() => { setopenEditDormitoriesModal(false) }}
+                onClose={() => {
+                    setopenEditDormitoriesModal(false);
+                    getFaculties();
+
+                }}
                 closeAfterTransition
 
                 slotProps={{
@@ -211,7 +284,7 @@ export default function DormitoriesDashboardComponent() {
                             p: 4,
                         }
                     }>
-                        <Box component={"form"} onSubmit={editFaculties}>
+                        <Box component={"form"} onSubmit={editDormitories}>
                             <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування факультету</Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
@@ -220,9 +293,65 @@ export default function DormitoriesDashboardComponent() {
                                         id="outlined-required"
                                         label="Номер гуртожитку"
                                         name='number'
-                                        defaultValue={dormitoriesList[findItemInState(selectionModel[0], dormitoriesList)]?.name}
+                                        defaultValue={currEditDorm?.number}
                                         fullWidth
                                     />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormControl fullWidth >
+                                        <InputLabel id="demo-simple-select-label">Виберіть адміністратора</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            defaultValue={adminList[findItemInState(currEditDorm?.commandant_id,adminList)]?.id}
+                                            label="Виберіть адміністратора"
+
+                                            onChange={(e) => {
+                                                setcurrEditDorm({
+                                                    ...currEditDorm,
+                                                    commandant_id: e.target.value
+                                                });
+                                            }}
+                                        >
+                                            {
+                                                adminList.map(item => (
+                                                    <MenuItem key={item.id} value={item.id}>{item.email}</MenuItem>
+                                                ))
+                                            }
+
+
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormControl fullWidth >
+                                        <InputLabel id="demo-simple-select-label">Виберіть факультети, які треба додати</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            defaultValue={undefined}
+                                            label="Факультети"
+
+                                            onChange={(e) => editFacultiesInDorm("add", e.target.value)}
+                                        >
+                                            {
+                                                facultiesList.map(item => (
+                                                    <MenuItem key={item.name} value={item.name}>{item.name}</MenuItem>
+                                                ))
+                                            }
+
+
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    {
+                                        currEditDorm?.faculties.map((element, index) => (
+                                            <Typography key={index} sx={{ display: "flex", alignItems: "center" }}>
+                                                {element}
+                                                <DeleteForeverIcon onClick={() => editFacultiesInDorm("remove", element)} /></Typography>
+                                        ))
+                                    }
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Button type="submit" variant='contained' color="success">
