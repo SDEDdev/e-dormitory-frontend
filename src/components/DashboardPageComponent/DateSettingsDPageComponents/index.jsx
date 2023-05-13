@@ -6,16 +6,18 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import { CheckTimeApi } from '../../../api/DashBoard/ChekTimeApi';
-import {findItemInState} from '../../../utils/findItemInState';
+import { findItemInState } from '../../../utils/findItemInState';
 import { CourseApi } from '../../../api/DashBoard/CourseApi';
 import { FacultiesApi } from '../../../api/DashBoard/FacultiesApi';
+import dayjs from 'dayjs';
 
 
 
 export default function DateSettingsDPageComponent() {
-  const [checkTimeList, setcheckTimeList] = useState([])
-  const [courseList, setcourseList] = useState([])
-  const [facultiesList, setfacultiesList] = useState([])
+  const [checkTimeList, setcheckTimeList] = useState([]);
+  const [courseList, setcourseList] = useState([]);
+  const [facultiesList, setfacultiesList] = useState([]);
+  const [currEditItem, setcurrEditItem] = useState(); 
   const [selectionModel, setSelectionModel] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,6 +32,10 @@ export default function DateSettingsDPageComponent() {
     setSelectionModel(newSelectionModel);
 
   };
+      //Запис поточного редагованого гуртожитку
+      const getCurrEditItem = () => {
+        setcurrEditItem(checkTimeList[findItemInState(selectionModel[0], checkTimeList)])
+    }
 
   useEffect(() => {
 
@@ -40,13 +46,13 @@ export default function DateSettingsDPageComponent() {
   }, [notification.isOpen]);
 
   useEffect(() => {
-    getUserList();
+    getList();
     getCourseList();
     getFacultiesList();
   }, [])
 
 
-  const getUserList = async () => {
+  const getList = async () => {
     setIsLoading(true);
     try {
       const data = await CheckTimeApi.getCheckTimeList();
@@ -58,7 +64,7 @@ export default function DateSettingsDPageComponent() {
       setIsLoading(false)
     }
   }
-  
+
   const getCourseList = async () => {
     setIsLoading(true);
     try {
@@ -95,10 +101,10 @@ export default function DateSettingsDPageComponent() {
     }
     console.log(body);
     try {
-      //await UserApi.addNewUser(body);
+      await CheckTimeApi.createCheckTimeList(body);
       setopenAddUserModal(false);
-      getUserList();
-      setNotification({ isOpen: true, msg: "Користувача створено", status: "success" });
+      getList();
+      setNotification({ isOpen: true, msg: "Дату поселення створено", status: "success" });
     } catch (error) {
       console.log(error);
       setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
@@ -108,37 +114,39 @@ export default function DateSettingsDPageComponent() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const body = {
-      id: selectionModel[0],
-      email: data.get("email"),
-      phone: data.get("phone"),
-      password: data.get("password"),
+      id:currEditItem.id,
+      faculty_id: data.get("faculty_id"),
+      course_id: data.get("course_id"),
+      in_time: data.get("in_time"),
+      out_time: data.get("out_time"),
+
     }
     try {
-      //await UserApi.editUser(body);
+      await CheckTimeApi.editCheckTimeList(body);
       setopenEditUserModal(false);
-      getUserList();
-      setNotification({ isOpen: true, msg: "Користувача відредаговано", status: "success" });
+      getList();
+      setNotification({ isOpen: true, msg: "Дату поселення відредаговано", status: "success" });
     } catch (error) {
       console.log(error);
       setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
     }
   }
- //console.log();
+  console.log(currEditItem);
   const columns = [
     { field: 'id', headerName: 'ID', width: 70, },
     {
       field: 'course_id', headerName: 'course_id', width: 150,
       renderCell: (params) => <Typography sx={{ margin: "0 5px" }}>{
-        courseList[findItemInState(params.row.course_id,courseList)]?.name 
-        }</Typography>
+        courseList[findItemInState(params.row.course_id, courseList)]?.name
+      }</Typography>
     },
     {
       field: 'faculty_id',
       headerName: 'faculty_id',
       width: 150,
       renderCell: (params) => <Typography sx={{ margin: "0 5px" }}>{
-        facultiesList[findItemInState(params.row.faculty_id,facultiesList)]?.name 
-        }</Typography>
+        facultiesList[findItemInState(params.row.faculty_id, facultiesList)]?.name
+      }</Typography>
 
     },
     {
@@ -159,7 +167,10 @@ export default function DateSettingsDPageComponent() {
       <Box sx={{ mb: "15px" }}>
         <Button sx={{ mr: '15px' }} disabled={!selectionModel.length} variant='contained' color="error" startIcon={<DeleteForeverIcon />}>Видалити</Button>
         <Button onClick={() => { setopenAddUserModal(true) }} sx={{ mr: '15px' }} variant='contained' color="success" startIcon={<AddCircleIcon />}>Додати дату поселення</Button>
-        <Button onClick={() => { setopenEditUserModal(true) }} sx={{ mr: '15px' }} disabled={selectionModel.length > 1 || selectionModel.length < 1} variant='contained' color="success" startIcon={<EditIcon />}>Редагувати дату поселення</Button>
+        <Button onClick={() => { 
+          setopenEditUserModal(true);
+          getCurrEditItem();
+           }} sx={{ mr: '15px' }} disabled={selectionModel.length > 1 || selectionModel.length < 1} variant='contained' color="success" startIcon={<EditIcon />}>Редагувати дату поселення</Button>
       </Box>
       {isLoading ? <Box sx={{ width: "100%", height: "100%", display: "flex", justifyContent: "center" }}><CircularProgress /></Box>
         :
@@ -210,58 +221,75 @@ export default function DateSettingsDPageComponent() {
               <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування часу поселення</Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                <FormControl fullWidth >
-                                        <InputLabel id="demo-simple-select-label">Виберіть факультет</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            name='faculty_id'
-                                            defaultValue={undefined}
-                                            label="Факультети"
-                                        >
-                                            {
-                                                facultiesList.map(item => (
-                                                    <MenuItem key={item.name} value={item.id}>{item.name}</MenuItem>
-                                                ))
-                                            }
+                  <FormControl fullWidth >
+                    <InputLabel id="demo-simple-select-label">Виберіть факультет</InputLabel>
+                    <Select
+                    required
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      name='faculty_id'
+                      defaultValue={undefined}
+                      label="Факультети"
+                    >
+                      {
+                        facultiesList.map(item => (
+                          <MenuItem key={item.name} value={item.id}>{item.name}</MenuItem>
+                        ))
+                      }
 
 
-                                        </Select>
-                                    </FormControl>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                {/* ------- */}
+                <Grid item xs={12}>
+                  <FormControl fullWidth >
+                    <InputLabel id="demo-simple-select-label">Виберіть курс</InputLabel>
+                    <Select
+                    required
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      name='course_id'
+                      defaultValue={undefined}
+                      label="Факультети"
+                    >
+                      {
+                        courseList.map(item => (
+                          <MenuItem key={item.name} value={item.id}>{item.name}</MenuItem>
+                        ))
+                      }
+
+
+                    </Select>
+                  </FormControl>
                 </Grid>
                 {/* ------- */}
                 <Grid item xs={12}>
                   <TextField
-                    required
-                    id="outlined-required"
-                    label="Телефон"
-                    name='phone'
+                  required
                     fullWidth
+                    name="in_time"
+                    label="Дата поселення"
+                    type="date"
+                    defaultValue={dayjs}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
                 </Grid>
                 {/* ------- */}
                 <Grid item xs={12}>
-                  <TextField
-                    required
-                    id="outlined-required"
-                    label="Пароль"
-                    name='password'
+                <TextField
+                required
                     fullWidth
+                    name="out_time"
+                    label="Дата виселення"
+                    type="date"
+                    defaultValue={dayjs}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
-                </Grid>
-                {/* ------- */}
-                <Grid item xs={12}>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    name="role"
-                    label="Роль"
-                    defaultValue={"commandant"}
-                    fullWidth
-                  >
-                    <MenuItem value={"dean"}>Деканат</MenuItem>
-                    <MenuItem value={"commandant"}>Комендант</MenuItem>
-                  </Select>
                 </Grid>
                 <Grid item xs={12}>
                   <Button type="submit" variant='contained' color="success">
@@ -269,16 +297,11 @@ export default function DateSettingsDPageComponent() {
                   </Button>
                 </Grid>
               </Grid>
-
-
-
-
-
             </Box>
           </Box>
         </Fade>
       </Modal>
-      {/* EditUser Modal */}
+      {/* Edit Modal */}
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -310,62 +333,82 @@ export default function DateSettingsDPageComponent() {
               <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування користувача</Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <TextField
+                  <FormControl fullWidth >
+                    <InputLabel id="demo-simple-select-label">Виберіть факультет</InputLabel>
+                    <Select
                     required
-                    id="outlined-required"
-                    label="Пошта"
-                    name='email'
-                    // defaultValue={checkTimeList[findItemInState(selectionModel[0])]?.email}
-                    fullWidth
-                  />
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      name='faculty_id'
+                      defaultValue={facultiesList[findItemInState(currEditItem?.faculty_id,facultiesList)].id}
+                      label="Факультети"
+                    >
+                      {
+                        facultiesList.map(item => (
+                          <MenuItem key={item.name} value={item.id}>{item.name}</MenuItem>
+                        ))
+                      }
+
+
+                    </Select>
+                  </FormControl>
+                </Grid>
+                {/* ------- */}
+                <Grid item xs={12}>
+                  <FormControl fullWidth >
+                    <InputLabel id="demo-simple-select-label">Виберіть курс</InputLabel>
+                    <Select
+                    required
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      name='course_id'
+                      defaultValue={courseList[findItemInState(currEditItem?.course_id,courseList)].id}
+                      label="Факультети"
+                    >
+                      {
+                        courseList.map(item => (
+                          <MenuItem key={item.name} value={item.id}>{item.name}</MenuItem>
+                        ))
+                      }
+
+
+                    </Select>
+                  </FormControl>
                 </Grid>
                 {/* ------- */}
                 <Grid item xs={12}>
                   <TextField
-                    required
-                    id="outlined-required"
-                    label="Телефон"
-                    name='phone'
-                    //defaultValue={checkTimeList[findItemInState(selectionModel[0])]?.phone}
+                  required
                     fullWidth
+                    name="in_time"
+                    label="Дата поселення"
+                    type="date"
+                    defaultValue={dayjs(currEditItem.in).format("YYYY-MM-DD")}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
                 </Grid>
                 {/* ------- */}
-
                 <Grid item xs={12}>
-                  <TextField
-
-                    id="outlined-required"
-                    label="Пароль"
-                    name='password'
+                <TextField
+                required
                     fullWidth
+                    name="out_time"
+                    label="Дата виселення"
+                    type="date"
+                    defaultValue={dayjs(currEditItem.out).format("YYYY-MM-DD")}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
                 </Grid>
-                {/* ------- */}
-                {/* <Grid item xs={12}>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                name="role"
-                                label="Роль"
-                                defaultValue={checkTimeList[selectionModel].role}
-                                fullWidth
-                            >
-                                <MenuItem value={"dean"}>Деканат</MenuItem>
-                                <MenuItem value={"commandant"}>Комендант</MenuItem>
-                            </Select>
-                        </Grid> */}
                 <Grid item xs={12}>
                   <Button type="submit" variant='contained' color="success">
-                    Оновити
+                    Додати
                   </Button>
                 </Grid>
               </Grid>
-
-
-
-
-
             </Box>
           </Box>
         </Fade>

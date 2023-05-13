@@ -6,7 +6,7 @@ export const CheckTimeApi = {
         return data;
     },
     async createCheckTimeList(body) {
-        const { data } = await axios.post("/v0/checkTime/edit",body);
+        const { data } = await axios.post("/v0/checkTime/create",body);
         return data;
     },
     async editCheckTimeList(body) {
