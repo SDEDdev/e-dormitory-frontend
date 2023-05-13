@@ -202,7 +202,7 @@ export default function DormitoriesDashboardComponent() {
                     :
                     <Box sx={{ textAlign: "center" }}><Typography>Тут поки пусто</Typography></Box>
             }
-            {/* AddUser Modal */}
+            {/* Add Modal */}
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
@@ -295,6 +295,12 @@ export default function DormitoriesDashboardComponent() {
                                         name='number'
                                         defaultValue={currEditDorm?.number}
                                         fullWidth
+                                        onChange={(e) => {
+                                                setcurrEditDorm({
+                                                    ...currEditDorm,
+                                                    number: e.target.value
+                                                });
+                                            }}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>

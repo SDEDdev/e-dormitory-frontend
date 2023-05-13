@@ -5,4 +5,12 @@ export const CheckTimeApi = {
         const { data } = await axios.get("/v0/checkTime");
         return data;
     },
+    async createCheckTimeList(body) {
+        const { data } = await axios.post("/v0/checkTime/edit",body);
+        return data;
+    },
+    async editCheckTimeList(body) {
+        const { data } = await axios.patch("/v0/checkTime/edit",body);
+        return data;
+    },
 }
