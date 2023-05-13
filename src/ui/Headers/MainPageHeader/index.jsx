@@ -54,7 +54,8 @@ export default function MainPageHeader(props) {
           token
           &&
           <>
-            {user.roles[0] !== "admin"
+          {/* ----- */}
+            {user.roles[0] === "user"
               &&
               <ListItem disablePadding>
                 <ListItemButton sx={{ textAlign: 'center' }}>
@@ -62,6 +63,7 @@ export default function MainPageHeader(props) {
                 </ListItemButton>
               </ListItem>
             }
+            {/* ----- */}
             {user.roles[0] === "admin"
               &&
               <ListItem disablePadding>
@@ -70,6 +72,17 @@ export default function MainPageHeader(props) {
                 </ListItemButton>
               </ListItem>
             }
+            {/* ------ */}
+            {user.roles[0] === "dean"
+              &&
+              <ListItem disablePadding>
+                <ListItemButton sx={{ textAlign: 'center' }}>
+                  <Link to={"/dasboard"}>Dasboard</Link>
+                </ListItemButton>
+              </ListItem>
+            }
+
+
 
             <ListItem disablePadding>
               <ListItemButton sx={{ textAlign: 'center' }}>
@@ -127,7 +140,7 @@ export default function MainPageHeader(props) {
                 &&
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   {/* ---Profile---- */}
-                  {user.roles[0] !== "admin"
+                  {user.roles[0] === "user"
                     &&
                     <Button sx={{ color: typePage === "main" ? "#000" : '#fff ' }} >
                       <Link to={"/order"}>Заявки</Link>
@@ -138,6 +151,13 @@ export default function MainPageHeader(props) {
                     &&
                     <Button sx={{ color: typePage === "main" ? "#000" : '#fff ' }} >
                       <Link to={"/dashboard/users"}>Dasboard</Link>
+                    </Button>}
+                  {/* ------------ */}
+                  {/* -----DeanAdminDasboard */}
+                  {user.roles[0] === "dean"
+                    &&
+                    <Button sx={{ color: typePage === "main" ? "#000" : '#fff ' }} >
+                      <Link to={"/dashboard/orders"}>Dasboard</Link>
                     </Button>}
                   {/* ------------ */}
                   {/* ---Profile---- */}

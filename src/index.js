@@ -21,6 +21,8 @@ import BenefitsPage from './pages/AdminPage/BenefitsPage';
 import DormitoriesPage from './pages/AdminPage/Dormitories';
 import FacultiesPage from './pages/AdminPage/FacultiesPage';
 import UsersPage from './pages/AdminPage/UsersPage';
+import CreateOrderPage from './pages/CreateOrderPage';
+import DateSettingsPage from './pages/AdminPage/DateSettingsPage';
 
 const router = createBrowserRouter([
   {
@@ -30,6 +32,10 @@ const router = createBrowserRouter([
   {
     path: "/order",
     element: <OrderPage/>,
+  },
+  {
+    path: "/create-order",
+    element: <CreateOrderPage/>,
   },
   {
     path: "/profile",
@@ -54,6 +60,14 @@ const router = createBrowserRouter([
       {
         path: "benefits",
         element: <BenefitsPage/>,
+      },
+      {
+        path: "orders",
+        element: <>Orders</>,
+      },
+      {
+        path: "date-settings",
+        element: <DateSettingsPage/>,
       },
     ],
   },

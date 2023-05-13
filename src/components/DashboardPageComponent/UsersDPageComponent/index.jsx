@@ -6,8 +6,6 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import { UserApi } from '../../../api/DashBoard/UsersApi';
-import Cookies from 'js-cookie';
-
 
 const columns = [
     { field: 'id', headerName: 'ID', width: 70, },
@@ -27,8 +25,6 @@ const columns = [
 
 
 export default function UsersDashboardComponent() {
-    const  token  = Cookies.get("token");
-
     const [usersList, setusersList] = useState([])
     const [selectionModel, setSelectionModel] = useState([]);
     const [isLoading, setIsLoading] = useState(false);

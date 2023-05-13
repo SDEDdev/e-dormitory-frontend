@@ -6,7 +6,7 @@ import { Alert, Box, Button, CircularProgress, Fade, Grid, Modal, TextField, Typ
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
-import { findItemInState } from '../../../utils/findUserInState';
+import { findItemInState } from '../../../utils/findItemInState';
 
 const columns = [
     { field: 'id', headerName: 'ID', width: 70, },

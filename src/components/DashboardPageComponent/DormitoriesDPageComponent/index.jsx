@@ -6,7 +6,7 @@ import { Alert, Box, Button, CircularProgress, Fade, FormControl, Grid, InputLab
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
-import { findItemInState } from '../../../utils/findUserInState';
+import { findItemInState } from '../../../utils/findItemInState';
 import { FacultiesApi } from '../../../api/DashBoard/FacultiesApi';
 import { UserApi } from '../../../api/DashBoard/UsersApi';
 
