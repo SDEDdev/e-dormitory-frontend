@@ -82,7 +82,35 @@ const DeanRoutes = (
         
     </Grid>
 )
-
+const CommRoutes = (
+    <Grid item xs={2} sx={{ display: "flex", flexDirection: "column", borderRight: "solid 1px #f1f1f1f1" }}>
+        {/* --------- */}
+        <Button sx={{ color: "#000", fontWeight: "600", fontSize: "18px" }}>
+            <NavLink to={"orders"}
+                style={({ isActive }) => {
+                    return {
+                        color: isActive ? "#62b42e" : "#000",
+                    };
+                }}
+            >
+                Список заяв
+            </NavLink>
+        </Button>
+        {/* --------- */}
+        <Button sx={{ color: "#000", fontWeight: "600", fontSize: "18px" }}>
+            <NavLink to={"room-settings"}
+                style={({ isActive }) => {
+                    return {
+                        color: isActive ? "#62b42e" : "#000",
+                    };
+                }}>
+                Налаштування кімнат
+            </NavLink>
+        </Button>
+     
+        
+    </Grid>
+)
 
 export default function DashboardPageComponent() {
     const user = JSON.parse(Cookies.get("user") || null);
@@ -94,6 +122,7 @@ export default function DashboardPageComponent() {
                     <Grid container >
                         {user?.roles[0] === "admin"  && AdminRoutes}
                         {user?.roles[0] === "dean"  && DeanRoutes}
+                        {user?.roles[0] === "commandant"  && CommRoutes}
                         <Grid item xs={10} sx={{ p: "15px" }}>
                             <Box sx={{ width: "100%" }}>
                                 <Outlet />

@@ -160,6 +160,13 @@ export default function MainPageHeader(props) {
                       <Link to={"/dashboard/orders"}>Dasboard</Link>
                     </Button>}
                   {/* ------------ */}
+                  {/* -----СommandantAdminDasboard */}
+                  {user.roles[0] === "commandant"
+                    &&
+                    <Button sx={{ color: typePage === "main" ? "#000" : '#fff ' }} >
+                      <Link to={"/dashboard/orders"}>Dasboard</Link>
+                    </Button>}
+                  {/* ------------ */}
                   {/* ---Profile---- */}
                   <Button sx={{ color: typePage === "main" ? "#000" : '#fff ' }}>
                     <Link className='avatarLink' to={"/profile"}><AccountCircleIcon sx={{ fontSize: "35px", mr: "5px" }} />{user?.email}</Link>

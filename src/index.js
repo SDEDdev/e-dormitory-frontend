@@ -23,6 +23,7 @@ import FacultiesPage from './pages/AdminPage/FacultiesPage';
 import UsersPage from './pages/AdminPage/UsersPage';
 import CreateOrderPage from './pages/CreateOrderPage';
 import DateSettingsPage from './pages/AdminPage/DateSettingsPage';
+import RoomSettingsPage from './pages/AdminPage/RoomSettingsPage';
 
 const router = createBrowserRouter([
   {
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
       {
         path: "date-settings",
         element: <DateSettingsPage/>,
+      },
+      {
+        path: "room-settings",
+        element: <RoomSettingsPage/>,
       },
     ],
   },

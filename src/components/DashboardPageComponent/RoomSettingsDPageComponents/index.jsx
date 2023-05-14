@@ -10,14 +10,15 @@ import { findItemInState } from '../../../utils/findItemInState';
 import { CourseApi } from '../../../api/DashBoard/CourseApi';
 import { FacultiesApi } from '../../../api/DashBoard/FacultiesApi';
 import dayjs from 'dayjs';
+import { RoomApi } from '../../../api/DashBoard/RoomApi';
 
 
 
-export default function DateSettingsDPageComponent() {
+export default function RoomSettingsDPageComponent() {
   const [checkTimeList, setcheckTimeList] = useState([]);
   const [courseList, setcourseList] = useState([]);
   const [facultiesList, setfacultiesList] = useState([]);
-  const [currEditItem, setcurrEditItem] = useState(); 
+  const [currEditItem, setcurrEditItem] = useState();
   const [selectionModel, setSelectionModel] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -32,10 +33,10 @@ export default function DateSettingsDPageComponent() {
     setSelectionModel(newSelectionModel);
 
   };
-      //Запис поточного редагованого гуртожитку
-      const getCurrEditItem = () => {
-        setcurrEditItem(checkTimeList[findItemInState(selectionModel[0], checkTimeList)])
-    }
+  //Запис поточного редагованого гуртожитку
+  const getCurrEditItem = () => {
+    setcurrEditItem(checkTimeList[findItemInState(selectionModel[0], checkTimeList)])
+  }
 
   useEffect(() => {
 
@@ -55,7 +56,7 @@ export default function DateSettingsDPageComponent() {
   const getList = async () => {
     setIsLoading(true);
     try {
-      const data = await CheckTimeApi.getCheckTimeList();
+      const data = await RoomApi.getRooms();
       console.log(data);
       setcheckTimeList(data)
       setIsLoading(false)
@@ -93,15 +94,14 @@ export default function DateSettingsDPageComponent() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const body = {
-      faculty_id: data.get("faculty_id"),
-      course_id: data.get("course_id"),
-      in_time: data.get("in_time"),
-      out_time: data.get("out_time"),
+      faculties_id: data.get("faculties_id"),
+      number: data.get("number"),
+      capacity: data.get("capacity"),
 
     }
     console.log(body);
     try {
-      await CheckTimeApi.createCheckTimeList(body);
+      await RoomApi.addNewRooms(body);
       setopenAddUserModal(false);
       getList();
       setNotification({ isOpen: true, msg: "Дату поселення створено", status: "success" });
@@ -114,15 +114,13 @@ export default function DateSettingsDPageComponent() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const body = {
-      id:currEditItem?.id,
-      faculty_id: data.get("faculty_id"),
-      course_id: data.get("course_id"),
-      in_time: data.get("in_time"),
-      out_time: data.get("out_time"),
-
+      id: currEditItem?.id,
+      faculties_id: data.get("faculties_id"),
+      number: data.get("number"),
+      capacity: data.get("capacity"),
     }
     try {
-      await CheckTimeApi.editCheckTimeList(body);
+      await RoomApi.editRooms(body);
       setopenEditUserModal(false);
       getList();
       setNotification({ isOpen: true, msg: "Дату поселення відредаговано", status: "success" });
@@ -131,46 +129,38 @@ export default function DateSettingsDPageComponent() {
       setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
     }
   }
-  console.log(currEditItem);
+  console.log(currEditItem?.faculties_name);
   const columns = [
     { field: 'id', headerName: 'ID', width: 70, },
     {
-      field: 'course_id', headerName: 'course_id', width: 150,
-      renderCell: (params) => <Typography sx={{ margin: "0 5px" }}>{
-        courseList[findItemInState(params.row.course_id, courseList)]?.name
-      }</Typography>
+      field: 'faculties_name',
+      headerName: 'Назва',
+      width: 150,
     },
     {
-      field: 'faculty_id',
-      headerName: 'faculty_id',
+      field: 'number',
+      headerName: 'Номер',
       width: 150,
-      renderCell: (params) => <Typography sx={{ margin: "0 5px" }}>{
-        facultiesList[findItemInState(params.row.faculty_id, facultiesList)]?.name
-      }</Typography>
+    },
+    {
+      field: 'capacity',
+      headerName: 'К-сть місць',
+      width: 150,
+    },
 
-    },
-    {
-      field: 'in',
-      headerName: 'Заселення',
-      width: 150,
-    },
-    {
-      field: 'out',
-      headerName: 'Виселення',
-      width: 150,
-    },
 
   ];
+  console.log(facultiesList);
   return (
     <Box sx={{ minHeight: "70vh", width: '100%' }}>
       {/* Function Button */}
       <Box sx={{ mb: "15px" }}>
         <Button sx={{ mr: '15px' }} disabled={!selectionModel.length} variant='contained' color="error" startIcon={<DeleteForeverIcon />}>Видалити</Button>
-        <Button onClick={() => { setopenAddUserModal(true) }} sx={{ mr: '15px' }} variant='contained' color="success" startIcon={<AddCircleIcon />}>Додати дату поселення</Button>
-        <Button onClick={() => { 
+        <Button onClick={() => { setopenAddUserModal(true) }} sx={{ mr: '15px' }} variant='contained' color="success" startIcon={<AddCircleIcon />}>Додати кімнату</Button>
+        <Button onClick={() => {
           setopenEditUserModal(true);
           getCurrEditItem();
-           }} sx={{ mr: '15px' }} disabled={selectionModel.length > 1 || selectionModel.length < 1} variant='contained' color="success" startIcon={<EditIcon />}>Редагувати дату поселення</Button>
+        }} sx={{ mr: '15px' }} disabled={selectionModel.length > 1 || selectionModel.length < 1} variant='contained' color="success" startIcon={<EditIcon />}>Редагувати кімнату</Button>
       </Box>
       {isLoading ? <Box sx={{ width: "100%", height: "100%", display: "flex", justifyContent: "center" }}><CircularProgress /></Box>
         :
@@ -224,11 +214,11 @@ export default function DateSettingsDPageComponent() {
                   <FormControl fullWidth >
                     <InputLabel id="demo-simple-select-label">Виберіть факультет</InputLabel>
                     <Select
-                    required
+                      required
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      name='faculty_id'
-                      defaultValue={undefined}
+                      name='faculties_id'
+                      defaultValue={""}
                       label="Факультети"
                     >
                       {
@@ -241,54 +231,23 @@ export default function DateSettingsDPageComponent() {
                     </Select>
                   </FormControl>
                 </Grid>
-                {/* ------- */}
-                <Grid item xs={12}>
-                  <FormControl fullWidth >
-                    <InputLabel id="demo-simple-select-label">Виберіть курс</InputLabel>
-                    <Select
-                    required
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      name='course_id'
-                      defaultValue={undefined}
-                      label="Факультети"
-                    >
-                      {
-                        courseList.map(item => (
-                          <MenuItem key={item.name} value={item.id}>{item.name}</MenuItem>
-                        ))
-                      }
-
-
-                    </Select>
-                  </FormControl>
-                </Grid>
-                {/* ------- */}
+                {/* ---------- */}
                 <Grid item xs={12}>
                   <TextField
-                  required
+                    required
                     fullWidth
-                    name="in_time"
-                    label="Дата поселення"
-                    type="date"
-                    defaultValue={dayjs}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
+                    name="number"
+                    label="Номер кімнати"
+                    
                   />
                 </Grid>
                 {/* ------- */}
                 <Grid item xs={12}>
-                <TextField
-                required
+                  <TextField
+                    required
                     fullWidth
-                    name="out_time"
-                    label="Дата виселення"
-                    type="date"
-                    defaultValue={dayjs}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
+                    name="capacity"
+                    label="К-сть місць"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -330,17 +289,17 @@ export default function DateSettingsDPageComponent() {
             }
           }>
             <Box component={"form"} onSubmit={edit}>
-              <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування користувача</Typography>
+              <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування кімнат</Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <FormControl fullWidth >
                     <InputLabel id="demo-simple-select-label">Виберіть факультет</InputLabel>
                     <Select
-                    required
+                      required
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      name='faculty_id'
-                      defaultValue={facultiesList[findItemInState(currEditItem?.faculty_id,facultiesList)].id}
+                      name='faculties_id'
+                      defaultValue={currEditItem?.faculties_id}
                       label="Факультети"
                     >
                       {
@@ -355,52 +314,23 @@ export default function DateSettingsDPageComponent() {
                 </Grid>
                 {/* ------- */}
                 <Grid item xs={12}>
-                  <FormControl fullWidth >
-                    <InputLabel id="demo-simple-select-label">Виберіть курс</InputLabel>
-                    <Select
-                    required
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      name='course_id'
-                      defaultValue={courseList[findItemInState(currEditItem?.course_id,courseList)].id}
-                      label="Факультети"
-                    >
-                      {
-                        courseList.map(item => (
-                          <MenuItem key={item.name} value={item.id}>{item.name}</MenuItem>
-                        ))
-                      }
-
-
-                    </Select>
-                  </FormControl>
-                </Grid>
-                {/* ------- */}
-                <Grid item xs={12}>
                   <TextField
-                  required
+                    required
                     fullWidth
-                    name="in_time"
-                    label="Дата поселення"
-                    type="date"
-                    defaultValue={dayjs(currEditItem.in).format("YYYY-MM-DD")}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
+                    name="number"
+                    defaultValue={currEditItem?.number}
+                    label="Номер кімнати"
+                    
                   />
                 </Grid>
                 {/* ------- */}
                 <Grid item xs={12}>
-                <TextField
-                required
+                  <TextField
+                    required
                     fullWidth
-                    name="out_time"
-                    label="Дата виселення"
-                    type="date"
-                    defaultValue={dayjs(currEditItem.out).format("YYYY-MM-DD")}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
+                    name="capacity"
+                    label="К-сть місць"
+                    defaultValue={currEditItem?.capacity}
                   />
                 </Grid>
                 <Grid item xs={12}>

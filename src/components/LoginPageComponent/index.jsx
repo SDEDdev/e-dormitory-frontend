@@ -50,6 +50,9 @@ export default function LoginPageComponent() {
         if (data.user.roles[0] === "dean") {
           navigate("/dashboard/orders");
         }
+        if (data.user.roles[0] === "commandant") {
+          navigate("/dashboard/orders");
+        }
         if (data.user.roles[0] === "user") {
           navigate("/order");
         }
