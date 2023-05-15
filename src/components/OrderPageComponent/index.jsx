@@ -13,11 +13,12 @@ export default function ProfilePageComponent() {
 
     return (
         <>
-            <MainPageHeader />
+            {user.roles[0] === "user" && <MainPageHeader />}
             <Container  sx={{marginTop:"20px"}}>
                 
                 {user.roles[0] === "user" && <UserContent token={token} />}
                 {user.roles[0] === "commandant" && <CommandantContent token={token}/>}
+                {user.roles[0] === "dean" && <CommandantContent token={token}/>}
                 
             </Container>
 

@@ -1,24 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
-import { Alert, Box, Button, CircularProgress, Fade, Grid, Modal, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Fade, FormControl, Grid, InputLabel, MenuItem, Modal, Select, Switch, TextField, Typography } from '@mui/material';
 
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import { findItemInState } from '../../../utils/findItemInState';
-
-const columns = [
-    { field: 'id', headerName: 'ID', width: 70, },
-    { field: 'name', headerName: 'Назва факультету', width: 220, },
-
-
-];
-
+import { UserApi } from '../../../api/DashBoard/UsersApi';
 
 export default function FacultiesDashboardComponent() {
     const [facultiesList, setfacultiesList] = useState([])
     const [selectionModel, setSelectionModel] = useState([]);
+    const [adminList, setadminList] = useState([]); //Список адмінстраторів гуртожитків для випадаючого списку
+    const [currEditItem, setcurrEditItem] = useState(); //Поточний гуртожиток, який редагується
+
+
     const [isLoading, setIsLoading] = useState(false);
 
     //Modals
@@ -31,10 +28,15 @@ export default function FacultiesDashboardComponent() {
         setSelectionModel(newSelectionModel);
 
     };
+
+    //Запис поточного редагованого гуртожитку
+    const getCurrEditItem = () => {
+        setcurrEditItem(facultiesList[findItemInState(selectionModel[0], facultiesList)])
+    }
     useEffect(() => {
 
         getFacultiesList();
-
+        getDormitoryAdmins();
     }, [])
     useEffect(() => {
 
@@ -56,6 +58,15 @@ export default function FacultiesDashboardComponent() {
             setIsLoading(false)
         }
     }
+    const getDormitoryAdmins = async () => {
+        try {
+            const data = await UserApi.getUsers({ params: { filter: "faculty_admin" } });
+            setadminList(data);
+            console.log(data);
+        } catch (error) {
+
+        }
+    }
 
     const addNewFaculties = async (event) => {
         event.preventDefault();
@@ -64,11 +75,11 @@ export default function FacultiesDashboardComponent() {
             name: data.get("name"),
         }
         try {
-           await axios.post("/v0/faculties/create", body);
+            await axios.post("/v0/faculties/create", body);
             setopenAddFacultiesModal(false);
             getFacultiesList();
             setNotification({ isOpen: true, msg: "Факульет створено", status: "success" });
-           
+
         } catch (error) {
             console.log(error);
             setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
@@ -80,6 +91,7 @@ export default function FacultiesDashboardComponent() {
         const body = {
             id: selectionModel[0],
             name: data.get("name"),
+            dean_id: data.get("dean_id"),
         }
         try {
             await axios.patch("/v0/faculties/edit", body);
@@ -92,10 +104,10 @@ export default function FacultiesDashboardComponent() {
         }
     }
 
-    const deleteFaculties = async() =>{
-        for(let i=0; i < selectionModel.length; i++ ){
+    const deleteFaculties = async () => {
+        for (let i = 0; i < selectionModel.length; i++) {
             try {
-                await axios.delete("/v0/faculties", {params:{id:selectionModel[i]}});
+                await axios.delete("/v0/faculties", { params: { id: selectionModel[i] } });
                 setNotification({ isOpen: true, msg: "Факульет видалено", status: "success" });
             } catch (error) {
                 console.log(error);
@@ -104,13 +116,40 @@ export default function FacultiesDashboardComponent() {
         }
         getFacultiesList();
     }
+    //Увімкнення/вимкнення знижки
+    const changeStatus = async (id) => {
+        try {
+            await axios.patch("/v0/faculties/changeStatus", { id: id })
+            console.log("change");
+        } catch (error) {
+            console.log("err");
+        }
+    }
+
+    const columns = [
+        { field: 'id', headerName: 'ID', width: 70, },
+        { field: 'name', headerName: 'Назва факультету', width: 220, },
+        { field: 'email', headerName: 'Адміністартор факультету', width: 220, },
+        {
+            field: 'available', headerName: 'Статуc', width: 80,
+            sortable: false,
+            filterable: false,
+            renderCell: (params) => (
+                <Switch sx={{ position: "relative", zIndex: "9999" }} defaultChecked={params.row.available === 1 ? true : false} onChange={() => { changeStatus(params.row.id) }} />
+            ),
+        },
+
+    ];
     return (
         <Box sx={{ minHeight: "70vh", width: '100%' }}>
             {/* Function Button */}
             <Box sx={{ mb: "15px" }}>
-                <Button sx={{ mr: '15px' }} onClick={deleteFaculties}  disabled={!selectionModel.length} variant='contained' color="error" startIcon={<DeleteForeverIcon />}>Видалити</Button>
+                <Button sx={{ mr: '15px' }} onClick={deleteFaculties} disabled={!selectionModel.length} variant='contained' color="error" startIcon={<DeleteForeverIcon />}>Видалити</Button>
                 <Button sx={{ mr: '15px' }} onClick={() => { setopenAddFacultiesModal(true) }} variant='contained' color="success" startIcon={<AddCircleIcon />}>Додати Факультет</Button>
-                <Button sx={{ mr: '15px' }} onClick={() => { setopenEditFacultiesModal(true) }} disabled={selectionModel.length > 1 || selectionModel.length < 1} variant='contained' color="success" startIcon={<EditIcon />}>Редагувати дані про факультет</Button>
+                <Button sx={{ mr: '15px' }} onClick={() => {
+                    setopenEditFacultiesModal(true);
+                    getCurrEditItem();
+                }} disabled={selectionModel.length > 1 || selectionModel.length < 1} variant='contained' color="success" startIcon={<EditIcon />}>Редагувати дані про факультет</Button>
             </Box>
             {isLoading ? <Box sx={{ width: "100%", height: "100%", display: "flex", justifyContent: "center" }}><CircularProgress /></Box>
                 :
@@ -125,6 +164,7 @@ export default function FacultiesDashboardComponent() {
                     }}
                     pageSizeOptions={[5, 10]}
                     checkboxSelection
+                    disableRowSelectionOnClick
                     onRowSelectionModelChange={handleSelectionModelChange}
                     rowSelectionModel={selectionModel}
                 />
@@ -221,6 +261,26 @@ export default function FacultiesDashboardComponent() {
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
+                                    <FormControl fullWidth >
+                                        <InputLabel id="demo-simple-select-label">Виберіть адміністратора</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            defaultValue={adminList[findItemInState(currEditItem?.commandant_id, adminList)]?.id}
+                                            label="Виберіть адміністратора"
+                                            name='dean_id'
+                                        >
+                                            {
+                                                adminList.map(item => (
+                                                    <MenuItem key={item.id} value={item.id}>{item.email}</MenuItem>
+                                                ))
+                                            }
+
+
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12}>
                                     <Button type="submit" variant='contained' color="success">
                                         Оновити
                                     </Button>
@@ -236,7 +296,7 @@ export default function FacultiesDashboardComponent() {
                 </Fade>
             </Modal>
             {notification.isOpen &&
-                <Alert sx={{ position: "absolute", top: "55px", right: "10px",zIndex:"9999" }} severity={notification.status}>{notification.msg}</Alert>
+                <Alert sx={{ position: "absolute", top: "55px", right: "10px", zIndex: "9999" }} severity={notification.status}>{notification.msg}</Alert>
             }
         </Box>
     )

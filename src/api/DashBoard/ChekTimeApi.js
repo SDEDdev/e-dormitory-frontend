@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export const CheckTimeApi = {
-    async getCheckTimeList() {
-        const { data } = await axios.get("/v0/checkTime");
+    async getCheckTimeList(params) {
+        const { data } = await axios.get("/v0/checkTime",params);
         return data;
     },
     async createCheckTimeList(body) {

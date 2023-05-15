@@ -104,7 +104,7 @@ export default function RoomSettingsDPageComponent() {
       await RoomApi.addNewRooms(body);
       setopenAddUserModal(false);
       getList();
-      setNotification({ isOpen: true, msg: "Дату поселення створено", status: "success" });
+      setNotification({ isOpen: true, msg: "Кімнату створено", status: "success" });
     } catch (error) {
       console.log(error);
       setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
@@ -123,7 +123,7 @@ export default function RoomSettingsDPageComponent() {
       await RoomApi.editRooms(body);
       setopenEditUserModal(false);
       getList();
-      setNotification({ isOpen: true, msg: "Дату поселення відредаговано", status: "success" });
+      setNotification({ isOpen: true, msg: "Кімнату відредеговано", status: "success" });
     } catch (error) {
       console.log(error);
       setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
@@ -208,7 +208,7 @@ export default function RoomSettingsDPageComponent() {
             }
           }>
             <Box component={"form"} onSubmit={addNew}>
-              <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування часу поселення</Typography>
+              <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Додавання кімнати</Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <FormControl fullWidth >
@@ -289,7 +289,7 @@ export default function RoomSettingsDPageComponent() {
             }
           }>
             <Box component={"form"} onSubmit={edit}>
-              <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування кімнат</Typography>
+              <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування кімнати</Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <FormControl fullWidth >

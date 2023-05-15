@@ -11,15 +11,7 @@ export default function UserContent({ token }) {
 
     const GetUserOrder = async () => {
         try {
-            const { data } = await axios.post("/v0/order/list", {
-                "limit": 10,
-                "page": 0
-            },
-                {
-                    headers: {
-                        'Authorization': `${token}`,
-                    }
-                });
+            const { data } = await axios.get("/v0/order/list");
             console.log(data);
             setuserOrdersData(data);
         } catch (error) {

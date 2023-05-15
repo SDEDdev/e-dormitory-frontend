@@ -24,65 +24,75 @@ import UsersPage from './pages/AdminPage/UsersPage';
 import CreateOrderPage from './pages/CreateOrderPage';
 import DateSettingsPage from './pages/AdminPage/DateSettingsPage';
 import RoomSettingsPage from './pages/AdminPage/RoomSettingsPage';
+import OrderViewPage from './pages/OrderViewPage';
+import ViewOrderPageComponent from './components/ViewOrderPageComponent';
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainPage/>,
+    element: <MainPage />,
   },
   {
     path: "/order",
-    element: <OrderPage/>,
+    element: <OrderPage />,
+  },
+  {
+    path: "/order/:id",
+    element: <OrderViewPage />,
   },
   {
     path: "/create-order",
-    element: <CreateOrderPage/>,
+    element: <CreateOrderPage />,
   },
   {
     path: "/profile",
-    element: <ProfilePage/>,
+    element: <ProfilePage />,
   },
   {
     path: "/dashboard",
-    element: <AdminPage/>,
+    element: <AdminPage />,
     children: [
       {
         path: "users",
-        element: <UsersPage/>,
+        element: <UsersPage />,
       },
       {
         path: "faculties",
-        element: <FacultiesPage/>,
+        element: <FacultiesPage />,
       },
       {
         path: "dormitories",
-        element: <DormitoriesPage/>,
+        element: <DormitoriesPage />,
       },
       {
         path: "benefits",
-        element: <BenefitsPage/>,
+        element: <BenefitsPage />,
       },
       {
         path: "orders",
-        element: <>Orders</>,
+        element: <OrderPage />,
+      },
+      {
+        path: "orders/:id",
+        element: <ViewOrderPageComponent />,
       },
       {
         path: "date-settings",
-        element: <DateSettingsPage/>,
+        element: <DateSettingsPage />,
       },
       {
         path: "room-settings",
-        element: <RoomSettingsPage/>,
+        element: <RoomSettingsPage />,
       },
     ],
   },
   {
-    path:"/account/login",
-    element:<LoginPage/>
+    path: "/account/login",
+    element: <LoginPage />
   },
   {
-    path:"/account/sign-up",
-    element:<RegisterPage/>
+    path: "/account/sign-up",
+    element: <RegisterPage />
   },
 ]);
 
@@ -93,7 +103,7 @@ axios.defaults.baseURL = process.env.REACT_APP_API;
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-     <RouterProvider router={router} />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 

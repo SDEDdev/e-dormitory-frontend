@@ -24,7 +24,8 @@ export default function LoginPageComponent() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (login && password) {
       try {
         setIsLogin(true)
@@ -33,7 +34,6 @@ export default function LoginPageComponent() {
           password: password,
         });
         setIsLogin(false)
-        console.log(data);
         Cookies.set('token', data.token, {
           expires: 1,
 
@@ -122,8 +122,8 @@ export default function LoginPageComponent() {
               {isError && <Grid item xs={12}><Alert severity="error">{errorMessage}</Alert> </Grid>}
             </Grid>
             <Button
-              //type="submit"
-              onClick={() => handleSubmit()}
+              type="submit"
+             // onClick={() => handleSubmit()}
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2, color: '#fff', backgroundColor: "rgb(39,39,42)", "&:hover": { backgroundColor: "rgba(39,39,42,0.9)" } }}

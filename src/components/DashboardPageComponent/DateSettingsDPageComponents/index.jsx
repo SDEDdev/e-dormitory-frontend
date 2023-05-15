@@ -93,7 +93,6 @@ export default function DateSettingsDPageComponent() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const body = {
-      faculty_id: data.get("faculty_id"),
       course_id: data.get("course_id"),
       in_time: data.get("in_time"),
       out_time: data.get("out_time"),
@@ -115,7 +114,6 @@ export default function DateSettingsDPageComponent() {
     const data = new FormData(event.currentTarget);
     const body = {
       id:currEditItem?.id,
-      faculty_id: data.get("faculty_id"),
       course_id: data.get("course_id"),
       in_time: data.get("in_time"),
       out_time: data.get("out_time"),
@@ -139,15 +137,6 @@ export default function DateSettingsDPageComponent() {
       renderCell: (params) => <Typography sx={{ margin: "0 5px" }}>{
         courseList[findItemInState(params.row.course_id, courseList)]?.name
       }</Typography>
-    },
-    {
-      field: 'faculty_id',
-      headerName: 'faculty_id',
-      width: 150,
-      renderCell: (params) => <Typography sx={{ margin: "0 5px" }}>{
-        facultiesList[findItemInState(params.row.faculty_id, facultiesList)]?.name
-      }</Typography>
-
     },
     {
       field: 'in',
@@ -218,29 +207,8 @@ export default function DateSettingsDPageComponent() {
             }
           }>
             <Box component={"form"} onSubmit={addNew}>
-              <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування часу поселення</Typography>
+              <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Додавання дати поселення</Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <FormControl fullWidth >
-                    <InputLabel id="demo-simple-select-label">Виберіть факультет</InputLabel>
-                    <Select
-                    required
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      name='faculty_id'
-                      defaultValue={undefined}
-                      label="Факультети"
-                    >
-                      {
-                        facultiesList.map(item => (
-                          <MenuItem key={item.name} value={item.id}>{item.name}</MenuItem>
-                        ))
-                      }
-
-
-                    </Select>
-                  </FormControl>
-                </Grid>
                 {/* ------- */}
                 <Grid item xs={12}>
                   <FormControl fullWidth >
@@ -330,29 +298,8 @@ export default function DateSettingsDPageComponent() {
             }
           }>
             <Box component={"form"} onSubmit={edit}>
-              <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування користувача</Typography>
+              <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування дати поселення</Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <FormControl fullWidth >
-                    <InputLabel id="demo-simple-select-label">Виберіть факультет</InputLabel>
-                    <Select
-                    required
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      name='faculty_id'
-                      defaultValue={facultiesList[findItemInState(currEditItem?.faculty_id,facultiesList)].id}
-                      label="Факультети"
-                    >
-                      {
-                        facultiesList.map(item => (
-                          <MenuItem key={item.name} value={item.id}>{item.name}</MenuItem>
-                        ))
-                      }
-
-
-                    </Select>
-                  </FormControl>
-                </Grid>
                 {/* ------- */}
                 <Grid item xs={12}>
                   <FormControl fullWidth >
@@ -362,8 +309,7 @@ export default function DateSettingsDPageComponent() {
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
                       name='course_id'
-                      defaultValue={courseList[findItemInState(currEditItem?.course_id,courseList)].id}
-                      label="Факультети"
+                      defaultValue={courseList[findItemInState(currEditItem?.course_id,courseList)]?.id}
                     >
                       {
                         courseList.map(item => (
@@ -383,7 +329,7 @@ export default function DateSettingsDPageComponent() {
                     name="in_time"
                     label="Дата поселення"
                     type="date"
-                    defaultValue={dayjs(currEditItem.in).format("YYYY-MM-DD")}
+                    defaultValue={dayjs(currEditItem?.in).format("YYYY-MM-DD")}
                     InputLabelProps={{
                       shrink: true,
                     }}
@@ -397,7 +343,7 @@ export default function DateSettingsDPageComponent() {
                     name="out_time"
                     label="Дата виселення"
                     type="date"
-                    defaultValue={dayjs(currEditItem.out).format("YYYY-MM-DD")}
+                    defaultValue={dayjs(currEditItem?.out).format("YYYY-MM-DD")}
                     InputLabelProps={{
                       shrink: true,
                     }}

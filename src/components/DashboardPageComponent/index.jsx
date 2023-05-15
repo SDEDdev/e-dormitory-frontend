@@ -54,7 +54,7 @@ const AdminRoutes = (
     </Grid>
 )
 const DeanRoutes = (
-    <Grid item xs={2} sx={{ display: "flex", flexDirection: "column", borderRight: "solid 1px #f1f1f1f1" }}>
+    <Grid item xs={2} sx={{ display: "flex", flexDirection: "column", borderRight: "solid 1px #f1f1f1f1", }}>
         {/* --------- */}
         <Button sx={{ color: "#000", fontWeight: "600", fontSize: "18px" }}>
             <NavLink to={"orders"}
@@ -83,7 +83,7 @@ const DeanRoutes = (
     </Grid>
 )
 const CommRoutes = (
-    <Grid item xs={2} sx={{ display: "flex", flexDirection: "column", borderRight: "solid 1px #f1f1f1f1" }}>
+    <Box  sx={{ display: "flex", flexDirection: "column", borderRight: "solid 1px #f1f1f1f1",minWidth:"200px",maxWidth:"200px" }}>
         {/* --------- */}
         <Button sx={{ color: "#000", fontWeight: "600", fontSize: "18px" }}>
             <NavLink to={"orders"}
@@ -97,7 +97,7 @@ const CommRoutes = (
             </NavLink>
         </Button>
         {/* --------- */}
-        <Button sx={{ color: "#000", fontWeight: "600", fontSize: "18px" }}>
+        <Button sx={{ color: "#000", fontWeight: "600", fontSize: "18px", width:"100%" }}>
             <NavLink to={"room-settings"}
                 style={({ isActive }) => {
                     return {
@@ -109,7 +109,7 @@ const CommRoutes = (
         </Button>
      
         
-    </Grid>
+    </Box>
 )
 
 export default function DashboardPageComponent() {
@@ -118,17 +118,17 @@ export default function DashboardPageComponent() {
         <>
             <MainPageHeader />
             <Container sx={{ marginTop: "20px" }}>
-                <Paper sx={{ p: "15px" }}>
-                    <Grid container >
+                <Paper sx={{ p: "15px", minWidth:"1100px" }}>
+                    <Box sx={{display:"flex"}} >
                         {user?.roles[0] === "admin"  && AdminRoutes}
                         {user?.roles[0] === "dean"  && DeanRoutes}
                         {user?.roles[0] === "commandant"  && CommRoutes}
-                        <Grid item xs={10} sx={{ p: "15px" }}>
-                            <Box sx={{ width: "100%" }}>
+                        <Box  sx={{ p: "15px" , minWidth:"650px", width:"100%"}}>
+                            <Box sx={{ width: "100%", minWidth:"800px" }}>
                                 <Outlet />
                             </Box>
-                        </Grid>
-                    </Grid>
+                        </Box>
+                    </Box>
                 </Paper>
             </Container>
 

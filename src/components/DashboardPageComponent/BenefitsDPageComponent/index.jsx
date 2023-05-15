@@ -39,7 +39,7 @@ export default function BenefitDashboardComponent() {
         getBenefitList();
     }, [])
 
-
+    // Отримання списку знижок
     const getBenefitList = async () => {
         setIsLoading(true);
         try {
@@ -52,8 +52,7 @@ export default function BenefitDashboardComponent() {
             setIsLoading(false)
         }
     }
-
-
+    //Додавання нових знижок
     const addNewBenefits = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -72,6 +71,7 @@ export default function BenefitDashboardComponent() {
             setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
         }
     }
+    //Редагування знижки
     const editBenefits = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -91,15 +91,16 @@ export default function BenefitDashboardComponent() {
             setNotification({ isOpen: true, msg: error.response.data.errors[0].msg, status: "error" });
         }
     }
-    const changeStatus = async(id)=>{
+    //Увімкнення/вимкнення знижки
+    const changeStatus = async (id) => {
         try {
-            await axios.patch("/v0/benefit/changeStatus",{id:id})
+            await axios.patch("/v0/benefit/changeStatus", { id: id })
             console.log("change");
         } catch (error) {
             console.log("err");
         }
     }
-
+    //Знаходження елементу в стейті
     const findItemInState = (userId) => {
         for (let i = 0; i < benefitList.length; i++) {
             if (userId === benefitList[i].id) {
@@ -108,10 +109,11 @@ export default function BenefitDashboardComponent() {
             }
         }
     }
-    const deletebenefits = async() =>{
-        for(let i=0; i < selectionModel.length; i++ ){
+    //Видалення знижки
+    const deletebenefits = async () => {
+        for (let i = 0; i < selectionModel.length; i++) {
             try {
-                await axios.delete("/v0/dormitory", {params:{id:selectionModel[i]}});
+                await axios.delete("/v0/dormitory", { params: { id: selectionModel[i] } });
                 setNotification({ isOpen: true, msg: "Факульет видалено", status: "success" });
             } catch (error) {
                 console.log(error);
@@ -130,11 +132,11 @@ export default function BenefitDashboardComponent() {
             sortable: false,
             filterable: false,
             renderCell: (params) => (
-                <Switch sx={{ position: "relative", zIndex: "9999" }} defaultChecked={params.row.available === 1 ? true : false} onChange={()=>{changeStatus(params.row.id)}}/>
+                <Switch sx={{ position: "relative", zIndex: "9999" }} defaultChecked={params.row.available === 1 ? true : false} onChange={() => { changeStatus(params.row.id) }} />
             ),
         },
-    
-    
+
+
     ];
     return (
         <Box sx={{ minHeight: "70vh", width: '100%' }}>
@@ -191,7 +193,7 @@ export default function BenefitDashboardComponent() {
                         }
                     }>
                         <Box component={"form"} onSubmit={addNewBenefits}>
-                            <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Створення нового користувача</Typography>
+                            <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Створення нового знижки</Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <TextField
@@ -219,11 +221,6 @@ export default function BenefitDashboardComponent() {
                                     </Button>
                                 </Grid>
                             </Grid>
-
-
-
-
-
                         </Box>
                     </Box>
                 </Fade>
@@ -257,7 +254,7 @@ export default function BenefitDashboardComponent() {
                         }
                     }>
                         <Box component={"form"} onSubmit={editBenefits}>
-                            <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування користувача</Typography>
+                            <Typography sx={{ textAlign: "center", fontSize: "25px", mb: "15px" }}>Редагування знижки</Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <TextField
@@ -286,11 +283,6 @@ export default function BenefitDashboardComponent() {
                                     </Button>
                                 </Grid>
                             </Grid>
-
-
-
-
-
                         </Box>
                     </Box>
                 </Fade>

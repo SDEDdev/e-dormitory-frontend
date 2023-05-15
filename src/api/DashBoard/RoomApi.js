@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export const RoomApi = {
-    async getRooms(body) {
-        const { data } = await axios.get("/v0/rooms");
+    async getRooms(params) {
+        const { data } = await axios.get("/v0/rooms", params);
         return data;
     },
     async addNewRooms(body) {
