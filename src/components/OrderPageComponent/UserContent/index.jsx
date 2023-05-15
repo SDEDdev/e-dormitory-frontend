@@ -10,6 +10,7 @@ export default function UserContent({ token }) {
 
     const [userOrdersData, setuserOrdersData] = useState(null);
     const [status, setStatus] = useState({});
+    const [canCreate, setcanCreate] = useState(true);
 
     const GetUserOrder = async () => {
         try {
@@ -23,13 +24,16 @@ export default function UserContent({ token }) {
 
     const revokeOrder = async (id) => {
         try {
-            await axios.post("/v0/order/revoke", {},
-                {
-                    headers: {
-                        'Authorization': `${token}`,
-                    }
-                });
+            await axios.post("/v0/order/revoke", {});
             GetUserOrder();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const getCanCreate = async (id) => {
+        try {
+          const {data}=  await axios.get("/v0/order/canCreate" );
+         setcanCreate(data)
         } catch (error) {
             console.log(error);
         }
@@ -37,6 +41,7 @@ export default function UserContent({ token }) {
 
     useEffect(() => {
         GetUserOrder();
+        getCanCreate();
     }, [])
 
     useEffect(() => {
@@ -48,7 +53,7 @@ export default function UserContent({ token }) {
     return (
         <>
 
-            <Button sx={{ marginBottom: "35px", backgroundColor: "#000", "&:hover": { backgroundColor: "rgba(43,48,59,0.8)" } }} variant="contained" >
+            <Button disabled={!canCreate} sx={{ marginBottom: "35px", backgroundColor: "#000", "&:hover": { backgroundColor: "rgba(43,48,59,0.8)" } }} variant="contained" >
                 <Link to={"/create-order"}>
                     Створити заявку
                 </Link>
