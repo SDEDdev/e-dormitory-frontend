@@ -135,13 +135,22 @@ export default function ViewOrderPageComponent() {
       </Box>
       <Box>
         {user?.roles[0] === "commandant" &&
-          <Button onClick={() => ChangeStatus(id, 6 )} variant='outlined' sx={{ color: "green", mr: "15px" }}>Підтвердити 1</Button>
+          <Button disabled={data?.status === "Підтверджено 1/2" ? true : false} onClick={() => ChangeStatus(id, 6 )} variant='outlined' sx={{ color: "green", mr: "15px" }}>Підтвердити 1</Button>
         }
         {user?.roles[0] === "dean" &&
-          <Button onClick={() => ChangeStatus(id, 2 )} variant='outlined' sx={{ color: "green", mr: "15px" }}>Підтвердити 2</Button>
+          <Button disabled={data?.status === "Підтверджено 2/2" ? true : false} onClick={() => ChangeStatus(id, 2 )} variant='outlined' sx={{ color: "green", mr: "15px" }}>Підтвердити 2</Button>
         }
+        {user?.roles[0] === "commandant" &&
+        <Button disabled={data?.status === "Відхилено" ? true : false}  onClick={() => ChangeStatus(id, 3)} variant='outlined' sx={{ color: "red" }}>Відхилити</Button>
+        }
+        {user?.roles[0] === "dean" &&
+        <Button disabled={data?.status === "Відхилено" ? true : false}  onClick={() => ChangeStatus(id, 3)} variant='outlined' sx={{ color: "red" }}>Відхилити</Button>
+        }
+        {user?.roles[0] === "user" &&
+        <Button disabled={data?.status === "Відкликано" ? true : false}  onClick={() => ChangeStatus(id, 5)} variant='outlined' sx={{ color: "red" }}>Відкликати</Button>
+        }
+          
         
-        <Button onClick={() => ChangeStatus(id, 5)} variant='outlined' sx={{ color: "red" }}>Відхилити</Button>
 
       </Box>
     </Box>

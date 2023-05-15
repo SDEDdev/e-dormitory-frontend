@@ -33,25 +33,7 @@ export default function CommandantContent({ token }) {
         }
     }
 
-    const ChangeStatus = async (id, status) => {
-        try {
-            const res = await axios.post("/v0/order/editStatus",
-                {
-
-                    "order": id,
-                    "status": status
-
-                },
-                {
-                    headers: {
-                        'Authorization': `${token}`,
-                    }
-                })
-            GetUserOrder();
-        } catch (error) {
-            console.log(error);
-        }
-    }
+   
 
     useEffect(() => {
         GetUserOrder();

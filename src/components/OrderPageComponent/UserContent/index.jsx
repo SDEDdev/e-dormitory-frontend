@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Alert, Box, Button, Grid, Modal, TextField, Typography } from '@mui/material'
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 
 export default function UserContent({ token }) {
+    const navigate = useNavigate();
+
     const [userOrdersData, setuserOrdersData] = useState(null);
     const [status, setStatus] = useState({});
 
@@ -57,14 +59,10 @@ export default function UserContent({ token }) {
                     ?
                     userOrdersData?.map((item, index) => (
                         <Grid item xs={12} key={index} >
-                            <Box sx={{ border: "2px solid #1976d2", borderRadius: "15px", padding: "15px" }}>
+                            <Box onClick={()=> navigate("/order/"+item?.id)} sx={{ border: "2px solid #1976d2", borderRadius: "15px", padding: "15px" }}>
                                 <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                     <Typography>Заявка №{item.id}</Typography>
-                                    <Typography>Статус: <span> </span>
-                                        {item.status === 1 && "У розгляді"}
-                                        {item.status === 2 && "Підтверджено"}
-                                        {item.status === 3 && "Відхилено"}
-                                        {item.status === 5 && "Відкликано"}
+                                    <Typography>Статус: {item.status}
                                     </Typography>
                                 </Box>
                                 <Box>
