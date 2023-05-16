@@ -8,9 +8,11 @@ import { RoomApi } from '../../api/DashBoard/RoomApi';
 import { CheckTimeApi } from '../../api/DashBoard/ChekTimeApi';
 import { BenefitsApi } from '../../api/DashBoard/BenefitsApi';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function CreateOrderPageComponent() {
+    const navigate = useNavigate();
     const [facultiesList, setfacultiesList] = useState([]); //Список факультетів для випадаючого списку
     const [courseList, setcourseList] = useState([]);
     const [dormList, setdormList] = useState([]);
@@ -50,7 +52,8 @@ export default function CreateOrderPageComponent() {
         data.append("check_out", data.get("date").split("/")[1]);
         try {
             await axios.post("/v0/order/create", data);
-            setStatus({ msg: "Заявку успішно створено", type: "success" })
+            setStatus({ msg: "Заявку успішно створено", type: "success" });
+            navigate("/order");
         } catch (error) {
             console.log(error);
 
