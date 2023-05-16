@@ -40,14 +40,15 @@ export default function CommandantContent({ token }) {
     }, [])
 
     const columns = [
-        { field: 'id', headerName: 'Заява №1', width: 100, },
+        { field: 'id', headerName: 'Заява №', width: 100, },
         { field: 'last_name', headerName: 'Прізвище', width: 120, },
         { field: 'first_name', headerName: "Ім'я", width: 120, },
         { field: 'sur_name', headerName: "По-батькові", width: 120, },
         { field: 'gender', headerName: "Стать", width: 120, },
         { field: 'group', headerName: "Група", width: 120, },
-        { field: 'course', headerName: "course_id", width: 120, },
-        { field: 'faculty', headerName: "faculty_id", width: 120, },
+        { field: 'course_id', headerName: "course_id", width: 120, },
+        { field: 'faculty_id', headerName: "faculty_id", width: 120, },
+        { field: 'created_at', headerName: "Дата створення", width: 120, },
         // {
         //     field: 'faculties', headerName: 'Прив`язані факультети', width: 220,
         //     renderCell: (params) => {
