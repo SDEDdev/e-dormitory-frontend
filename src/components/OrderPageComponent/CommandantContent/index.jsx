@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-import { Box, CircularProgress, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Typography } from '@mui/material'
 
 import { DataGrid } from '@mui/x-data-grid';
 
@@ -17,8 +17,6 @@ export default function CommandantContent({ token }) {
     const navigate = useNavigate();
     const handleSelectionModelChange = (newSelectionModel) => {
         setSelectionModel(newSelectionModel);
-        navigate("/dashboard/orders/"+newSelectionModel);
-
     };
 
     const GetUserOrder = async () => {
@@ -33,7 +31,26 @@ export default function CommandantContent({ token }) {
         }
     }
 
-   
+    const dowloadExel = async () => {
+        window.location.replace(process.env.REACT_APP_API + '/v0/export/xlsx?orders='+JSON.stringify(selectionModel));
+
+    }
+    const dowloadPDF = async () => {
+        window.open(process.env.REACT_APP_API + '/v0/export/pdf?orders='+JSON.stringify(selectionModel),'_blank');
+
+    }
+
+    const handleCellClick = (params, event) => {
+        if (event.target.tagName === 'INPUT' && event.target.type === 'checkbox') {
+            // Клікнуто по прапорцю Checkbox
+            console.log('Клікнуто по Checkbox:', params);
+
+        } else {
+            // Клікнуто по рядку DataGrid
+            console.log('Клікнуто по рядку:', params);
+            navigate("/dashboard/orders/" + params?.row?.id);
+        }
+    };
 
     useEffect(() => {
         GetUserOrder();
@@ -60,6 +77,8 @@ export default function CommandantContent({ token }) {
     return (
         <Box sx={{ minHeight: "70vh", width: '100%' }}>
             {/* Order list */}
+            <Button onClick={dowloadExel}>завантажити exel звіт</Button>
+            <Button onClick={dowloadPDF}>завантажити pdf звіт</Button>
             <Box>
                 {isLoading ? <Box sx={{ width: "100%", height: "100%", display: "flex", justifyContent: "center" }}><CircularProgress /></Box>
                     :
@@ -74,10 +93,10 @@ export default function CommandantContent({ token }) {
                                     paginationModel: { page: 0, pageSize: 25 },
                                 },
                             }}
-                            pageSizeOptions={[25, 50]}
-
+                            onCellClick={handleCellClick}
+                            pageSizeOptions={[25, 50, userOrdersData.length]}
+                            checkboxSelection
                             onRowSelectionModelChange={handleSelectionModelChange}
-                            rowSelectionModel={selectionModel}
                         />
                         :
                         <Box sx={{ textAlign: "center" }}><Typography>Тут поки пусто</Typography></Box>

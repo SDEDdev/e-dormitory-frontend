@@ -6,6 +6,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import { UserApi } from '../../../api/DashBoard/UsersApi';
+import axios from 'axios';
 
 const columns = [
     { field: 'id', headerName: 'ID', width: 70, },
@@ -107,6 +108,7 @@ export default function UsersDashboardComponent() {
         }
     }
 
+   
     const findUserInState = (userId) => {
         for (let i = 0; i < usersList.length; i++) {
             if (userId === usersList[i].id) {
@@ -117,6 +119,7 @@ export default function UsersDashboardComponent() {
     }
     return (
         <Box sx={{ minHeight: "70vh", width: '100%' }}>
+       
             {/* Function Button */}
             <Box sx={{ mb: "15px" }}>
                 {/* <Button sx={{ mr: '15px' }} disabled={!selectionModel.length} variant='contained' color="error" startIcon={<DeleteForeverIcon />}>Видалити</Button> */}
