@@ -11,8 +11,9 @@
 An interdisciplinary project, the purpose of which is to optimize the work with the settlement of students.
 
 # Опис
-Front-end створив: [https://github.com/maxbutcher1](https://github.com/maxbutcher1) 
-Back-end створив: [https://github.com/SinedGG](https://github.com/SinedGG) 
+Front-end створив: [https://github.com/maxbutcher1](https://github.com/maxbutcher1).
+
+Back-end створив: [https://github.com/SinedGG](https://github.com/SinedGG). 
 #### Стек
 Front-end: React.js, MUI
 Back-end: NODE.JS, Express 
