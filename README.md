@@ -1,70 +1,49 @@
-# Getting Started with Create React App
+# [UA] "Є-послення"
+# [EN] "E-dormitory"
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[https://e-dormitory.sded.cf/](https://e-dormitory.sded.cf/)
 
-## Available Scripts
 
-In the project directory, you can run:
+[UA]
+Міждисциплінарний проєкт, мета якого оптимізувати роботу з поселенням студентів.
 
-### `npm start`
+[EN]
+An interdisciplinary project, the purpose of which is to optimize the work with the settlement of students.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+# Опис
+Front-end створив: [https://github.com/maxbutcher1](https://github.com/maxbutcher1) 
+Back-end створив: [https://github.com/SinedGG](https://github.com/SinedGG) 
+#### Стек
+Front-end: React.js, MUI
+Back-end: NODE.JS, Express 
+### Features "Адміністратор сервісу"
+login: sa@mail.com
+pass:123456
+- Створення, редагування адмінстраторів факультетів та гуртожитків.
+- Створення, видалення, редагування факультетів, їх ввімкнення та вимкнення. Призначення адміністратора до певного факультету.
+- Створення, видалення, редагування гуртожитків. Призначення адміністратора до певного гуртожитку.
+- Створення, видалення, редагування пільг, їх ввімкнення та вимкнення.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Features "Адміністратор факультету"
+login: it@mail.com
+pass:123456
+- Перегляд заяв, та зміна їх статусу.
+- Завантаження звітів з вибраних заяв в exel та PDF.
+- Створення, видалення та редагування дат поселення.
 
-### `npm test`
+### Features "Адміністратор гуртожитку"
+login: d1@mail.com
+pass:123456
+- Перегляд заяв, та зміна їх статусу.
+- Завантаження звітів з вибраних заяв в exel та PDF.
+- Створення, видалення та редагування кімнат.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Features "Користувач студент"
+- Створення заяв на поселення.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
