@@ -1,4 +1,4 @@
-# [UA] "Є-послення"
+# [UA] "Є-поселення"
 # [EN] "E-dormitory"
 
 [https://e-dormitory.sded.cf/](https://e-dormitory.sded.cf/)
